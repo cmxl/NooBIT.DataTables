@@ -4,9 +4,9 @@ NooBIT.DataTables provides functionality to process ajax requests from https://d
 
 ---
 
+[![NuGet](https://img.shields.io/nuget/v/NooBIT.DataTables.svg)](https://www.nuget.org/packages/NooBIT.DataTables/)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/na5puqlx286872l3/branch/master?svg=true)](https://ci.appveyor.com/project/cmxl/noobit-datatables/branch/master)
-
 
 ---
 
