@@ -4,6 +4,12 @@ NooBIT.DataTables provides functionality to process ajax requests from https://d
 
 ---
 
+
+[![Build status](https://ci.appveyor.com/api/projects/status/lelhr75harlrqt75/branch/master?svg=true)](https://ci.appveyor.com/project/cmxl/ffmpeg-net/branch/master)
+
+
+---
+
 ## Usage
 
 Implement your custom table like this:
