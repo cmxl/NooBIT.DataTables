@@ -22,7 +22,7 @@ namespace NooBIT.DataTables
             _queryableRequestService = queryableRequestService;
         }
 
-        public virtual async Task<AjaxDataViewModel> GetAsync(AjaxProcessingViewModel vm, CancellationToken token)
+        public virtual async Task<AjaxDataViewModel> GetAsync(AjaxProcessingViewModel vm, CancellationToken token = default(CancellationToken))
         {
             var result = new AjaxDataViewModel
             {
