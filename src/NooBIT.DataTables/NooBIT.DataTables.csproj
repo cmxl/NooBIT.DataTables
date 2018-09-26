@@ -10,6 +10,10 @@
     <PackageTags>datatables, netstandard, dotnet</PackageTags>
     <Company />
     <Authors>Tobias Haimerl (cmxl)</Authors>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Version>1.0.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReleaseNotes />
   </PropertyGroup>
 
   <ItemGroup>

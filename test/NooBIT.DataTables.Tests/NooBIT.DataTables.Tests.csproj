@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NooBIT.DataTables\NooBIT.DataTables.csproj" />
+    <ProjectReference Include="..\..\src\NooBIT.DataTables\NooBIT.DataTables.csproj" />
   </ItemGroup>
 
 </Project>

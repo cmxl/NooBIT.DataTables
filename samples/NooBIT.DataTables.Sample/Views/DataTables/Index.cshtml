@@ -1,0 +1,37 @@
+﻿@using NooBIT.DataTables.AspNetCore.Mvc;
+@model NooBIT.DataTables.IDataTable<NooBIT.DataTables.Sample.Model.SampleData>
+
+@{
+    ViewBag.Title = "Sample";
+    Layout = "_Layout";
+}
+
+@section Scripts{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script>
+		$(function() {
+			$('table').DataTable({
+				columnDefs: @Html.DataTableColumns(Model.GetColumns()),
+				serverSide: true,
+				processing: true,
+				ajax: function(data, callback, settings) {
+					$.ajax({
+						url: '@Url.Action("DataTable")',
+						method: 'POST',
+						data: data
+					}).done(function(d, status, xhr) {
+						callback(d);
+					}).fail(function(d, statusCode, statusMessage) {
+						alert(d.responseJSON.error);
+						callback(d.responseJSON);
+					});
+				}
+			});
+		});
+    </script>
+}
+
+<h2>Sample</h2>
+@Html.DataTable(Model)
