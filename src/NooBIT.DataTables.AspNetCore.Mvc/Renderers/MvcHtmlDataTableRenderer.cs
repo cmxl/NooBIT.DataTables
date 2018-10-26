@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using System.Security.Principal;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
 
 namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
 {
@@ -26,14 +25,14 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
 
         private IHtmlContent CreateTableFooter<TEntity>(IDataTable<TEntity> dataTable) where TEntity : class
         {
-            if (dataTable.GetColumns().All(x => x.Footer == null))
+            if (dataTable.Columns.All(x => x.Footer == null))
                 return null;
 
             var tfoot = new TagBuilder("tfoot");
             tfoot.AddCssClass("editForm");
 
             var tr = new TagBuilder("tr");
-            foreach (var column in dataTable.GetColumns().Where(x => x.Footer != null))
+            foreach (var column in dataTable.Columns.Where(x => x.Footer != null))
             {
                 var td = new TagBuilder("td");
                 if (column.Footer.ColSpan > 0)
@@ -53,7 +52,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             var tr = new TagBuilder("tr");
             var br = new TagBuilder("br");
 
-            foreach (var column in dataTable.GetColumns())
+            foreach (var column in dataTable.Columns)
             {
                 var filter = CreateFilter(column);
                 var display = CreateTableHeaderDisplay(column.Header);
@@ -88,11 +87,8 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return _editorRenderer.Render(footer.Editor);
         }
 
-        private IHtmlContent CreateFilter<TEntity>(DataTable<TEntity>.Column column) where TEntity : class
-        {
-            return column.Header.Filter == null
+        private IHtmlContent CreateFilter<TEntity>(DataTable<TEntity>.Column column) where TEntity : class => column.Header.Filter == null
                 ? null
                 : _editorRenderer.Render(column.Header.Filter);
-        }
     }
 }

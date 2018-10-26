@@ -1,13 +1,13 @@
-﻿using System;
+﻿using NooBIT.DataTables.Helpers;
+using NooBIT.DataTables.Models;
+using NooBIT.DataTables.Queries;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using NooBIT.DataTables.Helpers;
-using NooBIT.DataTables.Models;
-using NooBIT.DataTables.Queries;
 
 namespace NooBIT.DataTables
 {
@@ -15,6 +15,7 @@ namespace NooBIT.DataTables
     {
         private readonly IQueryableRequestService<TEntity> _queryableRequestService;
         protected readonly Sorter<TEntity> Sorter = new Sorter<TEntity>();
+        private Column[] _columns;
 
         public DataTable(
             IQueryableRequestService<TEntity> queryableRequestService)
@@ -22,7 +23,7 @@ namespace NooBIT.DataTables
             _queryableRequestService = queryableRequestService;
         }
 
-        public virtual async Task<AjaxDataViewModel> GetAsync(AjaxProcessingViewModel vm, CancellationToken token = default(CancellationToken))
+        public virtual async Task<AjaxDataViewModel> GetAsync(AjaxProcessingViewModel vm, CancellationToken token = default)
         {
             var result = new AjaxDataViewModel
             {
@@ -46,7 +47,7 @@ namespace NooBIT.DataTables
 
                 result.RecordsFiltered = await GetFilteredRecordsCount(query, vm, token);
 
-                var orderInstructions = GenerateInstructions(vm);
+                var orderInstructions = GenerateSortInstructions(vm);
                 query = Sorter.SortBy(query, orderInstructions);
 
                 if (!token.IsCancellationRequested && vm.Length >= 0)
@@ -78,65 +79,53 @@ namespace NooBIT.DataTables
         }
 
         public event Func<object, DataTableErrorEventArgs, Task> Error;
-        public virtual Dictionary<int, string> DefaultColumnOrder { get; } = new Dictionary<int, string> { {0, SortDirections.Ascending} };
+        public virtual Dictionary<int, string> DefaultColumnOrder { get; } = new Dictionary<int, string> { { 0, SortDirections.Ascending } };
         public virtual int DefaultPageLength { get; } = 100;
 
-        private IEnumerable<SortInstruction> GenerateInstructions(AjaxProcessingViewModel vm)
+        private IEnumerable<SortInstruction> GenerateSortInstructions(AjaxProcessingViewModel vm)
         {
             var instructions = new List<SortInstruction>();
             foreach (var o in vm.Order)
             {
-                var col = GetColumns().FirstOrDefault(x => x.Target == o.Column && x.Orderable);
-                if (col == null)
-                    continue;
-
-                instructions.AddRange(col.Orders.Select(x => new SortInstruction {Name = x.ColumnName, Direction = o.Dir.ToLower() == "asc" ? SortDirection.Ascending : SortDirection.Descending}));
+                var col = Columns.Single(x => x.Target == o.Column && x.Orderable);
+                instructions.AddRange(col.Orders.Select(x => new SortInstruction
+                {
+                    Name = x.ColumnName,
+                    Direction = o.Dir.ToLower() == "asc" ? SortDirection.Ascending : SortDirection.Descending
+                }));
             }
             return instructions;
         }
 
-        protected virtual Column GetColumnTemplate(PropertyInfo x, int index)
+        protected virtual Column GetColumnTemplate(PropertyInfo x, int index) => new Column(this)
         {
-            return new Column(this)
-            {
-                Header = new Header {DisplayName = x.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? x.Name},
-                Name = x.Name,
-                Orderable = true,
-                Orders = new[]
+            Header = new Header { DisplayName = x.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? x.Name },
+            Name = x.Name,
+            Orderable = true,
+            Orders = new[]
                 {
                     new Column.Order
                     {
                         ColumnName = x.Name
                     }
                 },
-                Render = (o, item) => o,
-                Searchable = true,
-                Target = index
-            };
-        }
+            Render = (o, item) => o,
+            Searchable = true,
+            Target = index
+        };
 
-        public virtual List<Column> GetColumns()
-        {
-            return typeof(TEntity)
+        public Column[] Columns => _columns ?? (_columns = GetColumnsInternal());
+
+        protected virtual Column[] GetColumnsInternal() => typeof(TEntity)
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Select(GetColumnTemplate)
-                .ToList();
-        }
+                .ToArray();
 
-        protected virtual Task<List<TEntity>> GetValues(IQueryable<TEntity> query, CancellationToken token)
-        {
-            return Task.FromResult(query.ToList());
-        }
+        protected virtual Task<List<TEntity>> GetValues(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query.ToList());
 
-        protected virtual Task<int> GetTotalRecordsCount(IQueryable<TEntity> query, AjaxProcessingViewModel vm, CancellationToken token)
-        {
-            return Task.FromResult(query.Count());
-        }
+        protected virtual Task<int> GetTotalRecordsCount(IQueryable<TEntity> query, AjaxProcessingViewModel vm, CancellationToken token) => Task.FromResult(query.Count());
 
-        protected virtual Task<int> GetFilteredRecordsCount(IQueryable<TEntity> query, AjaxProcessingViewModel vm, CancellationToken token)
-        {
-            return Task.FromResult(query.Count());
-        }
+        protected virtual Task<int> GetFilteredRecordsCount(IQueryable<TEntity> query, AjaxProcessingViewModel vm, CancellationToken token) => Task.FromResult(query.Count());
 
         private async Task OnError(AjaxProcessingViewModel vm, Exception exception)
         {
@@ -148,15 +137,12 @@ namespace NooBIT.DataTables
             var handlerTasks = new Task[invocationList.Length];
 
             for (var i = 0; i < invocationList.Length; i++)
-                handlerTasks[i] = ((Func<object, DataTableErrorEventArgs, Task>) invocationList[i])(this, CreateOnErrorEventArgs(vm, exception));
+                handlerTasks[i] = ((Func<object, DataTableErrorEventArgs, Task>)invocationList[i])(this, CreateOnErrorEventArgs(vm, exception));
 
             await Task.WhenAll(handlerTasks);
         }
 
-        protected virtual DataTableErrorEventArgs CreateOnErrorEventArgs(AjaxProcessingViewModel vm, Exception exception)
-        {
-            return new DataTableErrorEventArgs(vm, exception);
-        }
+        protected virtual DataTableErrorEventArgs CreateOnErrorEventArgs(AjaxProcessingViewModel vm, Exception exception) => new DataTableErrorEventArgs(vm, exception);
 
         protected bool IsSearchable<TValue>(AjaxSearch search, AjaxColumn column, out TValue searchValue)
         {
@@ -169,8 +155,8 @@ namespace NooBIT.DataTables
         protected bool IsSearchable(AjaxSearch search, AjaxColumn column)
         {
             var searchText = GetSearchText(search, column);
-            var col = GetColumns().FirstOrDefault(x => x.Name == column.Name);
-            return col != null && col.Searchable && !string.IsNullOrWhiteSpace(searchText);
+            var col = Columns.Single(x => x.Name == column.Name);
+            return col.Searchable && !string.IsNullOrWhiteSpace(searchText);
         }
 
         protected string GetSearchText(AjaxSearch search, AjaxColumn column)
@@ -185,14 +171,11 @@ namespace NooBIT.DataTables
         protected virtual async Task<IEnumerable<Dictionary<string, object>>> MapResultSetAsync(TEntity result, CancellationToken token)
         {
             var properties = result.GetType().GetProperties();
-            var dict = GetColumns().ToDictionary(x => x.Name, x => x.Render(properties.FirstOrDefault(y => y.Name == x.Name)?.GetValue(result), result));
+            var dict = Columns.ToDictionary(x => x.Name, x => x.Render(properties.FirstOrDefault(y => y.Name == x.Name)?.GetValue(result), result));
             return await Task.WhenAll(Task.FromResult(dict));
-        } 
-
-        protected virtual Task<IQueryable<TEntity>> GlobalWhereAsync(IQueryable<TEntity> query, CancellationToken token)
-        {
-            return Task.FromResult(query);
         }
+
+        protected virtual Task<IQueryable<TEntity>> GlobalWhereAsync(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query);
 
         protected abstract Task<IQueryable<TEntity>> WhereAsync(IQueryable<TEntity> query, AjaxProcessingViewModel vm, AjaxColumn column, CancellationToken token);
 
@@ -209,7 +192,7 @@ namespace NooBIT.DataTables
             public bool Searchable { get; set; }
             public bool Orderable { get; set; }
             public bool Hidden { get; set; }
-            public Order[] Orders { get; set; } = {};
+            public Order[] Orders { get; set; } = { };
             public Func<object, TEntity, object> Render { get; set; } = (data, entity) => data;
             public Footer Footer { get; set; }
             public Header Header { get; set; } = new Header();
@@ -225,10 +208,12 @@ namespace NooBIT.DataTables
             public Table(IDataTable<TEntity> table)
             {
                 DataTable = table;
+                Columns = table.Columns.OrderBy(x => x.Target).ToArray();
             }
 
             public IDataTable<TEntity> DataTable { get; }
             public Row[] Rows { get; internal set; }
+            public Column[] Columns { get; internal set; }
             public long TotalRecords { get; internal set; }
             public long FilteredRecords { get; internal set; }
         }
@@ -238,15 +223,11 @@ namespace NooBIT.DataTables
             public Row(IDataTable<TEntity> table)
             {
                 Table = table;
+                Columns = Table.Columns.OrderBy(x => x.Target).Select(x => new ValueColumn { Column = x }).ToArray();
             }
-
-            private List<ValueColumn> _columns;
 
             public IDataTable<TEntity> Table { get; }
-            public List<ValueColumn> Columns
-            {
-                get { return _columns ?? (_columns = Table.GetColumns().OrderBy(x => x.Target).Select(x => new ValueColumn {Column = x}).ToList()); }
-            }
+            public ValueColumn[] Columns { get; }
 
             public ValueColumn this[int index]
             {
@@ -256,12 +237,11 @@ namespace NooBIT.DataTables
 
             public ValueColumn this[string column]
             {
-                get { return Columns.Single(x => x.Column.Name == column); }
+                get => Columns.Single(x => x.Column.Name == column);
                 set
                 {
-                    var col = Columns.Single(x => x.Column.Name == column);
-                    var index = Columns.IndexOf(col);
-                    Columns[index] = value;
+                    var index = Array.FindIndex(Columns, col => col.Column.Name == column);
+                    this[index] = value;
                 }
             }
 
@@ -275,7 +255,7 @@ namespace NooBIT.DataTables
 
     public interface IDataTable<TEntity> : IDataTable where TEntity : class
     {
-        List<DataTable<TEntity>.Column> GetColumns();
+        DataTable<TEntity>.Column[] Columns { get; }
     }
 
     public interface IDataTable

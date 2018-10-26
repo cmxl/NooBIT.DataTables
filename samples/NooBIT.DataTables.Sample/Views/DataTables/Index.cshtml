@@ -13,7 +13,7 @@
     <script>
 		$(function() {
 			$('table').DataTable({
-				columnDefs: @Html.DataTableColumns(Model.GetColumns()),
+				columnDefs: @Html.DataTableColumns(Model.Columns),
 				serverSide: true,
 				processing: true,
 				ajax: function(data, callback, settings) {

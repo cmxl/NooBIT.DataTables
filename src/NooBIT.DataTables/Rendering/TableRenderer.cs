@@ -12,7 +12,7 @@ namespace NooBIT.DataTables.Rendering
             foreach (Dictionary<string, object> d in data.Data)
             {
                 var row = new DataTable<TEntity>.Row(dataTable);
-                for (var i = 0; i < row.Columns.Count; i++)
+                for (var i = 0; i < row.Columns.Length; i++)
                 {
                     if (d.ContainsKey(row[i].Column.Name))
                     {
