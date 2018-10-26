@@ -74,22 +74,15 @@ namespace NooBIT.DataTables
 
         private IEnumerable<SortInstruction> GenerateSortInstructions(AjaxProcessingViewModel vm)
         {
-            foreach (var o in vm.Order)
-            {
-                var sortinstructions = Columns
+            return vm.Order
+                .SelectMany(o => Columns
                     .Single(x => x.Target == o.Column && x.Orderable)
                     .Orders
                     .Select(x => new SortInstruction
                     {
                         Name = x.ColumnName,
                         Direction = o.Dir.ToLower() == "asc" ? SortDirection.Ascending : SortDirection.Descending
-                    });
-
-                foreach (var instruction in sortinstructions)
-                {
-                    yield return instruction;
-                }
-            }
+                    }));
         }
 
         protected virtual Column GetColumnTemplate(PropertyInfo x, int index) => new Column(this)
