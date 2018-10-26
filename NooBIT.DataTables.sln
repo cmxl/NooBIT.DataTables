@@ -7,9 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NooBIT.DataTables", "src\No
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NooBIT.DataTables.Tests", "test\NooBIT.DataTables.Tests\NooBIT.DataTables.Tests.csproj", "{42451259-3F02-4DD1-AC24-069123D63743}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NooBIT.DataTables.Sample", "samples\NooBIT.DataTables.Sample\NooBIT.DataTables.Sample.csproj", "{2C21D557-7628-4923-BD80-D03BA0F722A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NooBIT.DataTables.Sample", "samples\NooBIT.DataTables.Sample\NooBIT.DataTables.Sample.csproj", "{2C21D557-7628-4923-BD80-D03BA0F722A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NooBIT.DataTables.AspNetCore.Mvc", "src\NooBIT.DataTables.AspNetCore.Mvc\NooBIT.DataTables.AspNetCore.Mvc.csproj", "{F6623D5F-83C2-46A5-95A8-CA89CF2A3F17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NooBIT.DataTables.AspNetCore.Mvc", "src\NooBIT.DataTables.AspNetCore.Mvc\NooBIT.DataTables.AspNetCore.Mvc.csproj", "{F6623D5F-83C2-46A5-95A8-CA89CF2A3F17}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{7FEDF011-607A-4DDE-80C4-73CABEAA616B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
