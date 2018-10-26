@@ -14,8 +14,8 @@ NooBIT.DataTables provides functionality to process ajax requests from https://d
 
 | Package | NuGet |
 | --- | --- |
-| NooBIT.DataTables | [![NuGet](https://buildstats.info/nuget/NooBIT.AspNetCore.Mvc)](https://www.nuget.org/packages/NooBIT.DataTables/) |
-| NooBIT.DataTables.AspNetCore.Mvc | [![NuGet](https://buildstats.info/nuget/NooBIT.AspNetCore.Mvc)](https://www.nuget.org/packages/NooBIT.DataTables.AspNetCore.Mvc/) |
+| NooBIT.DataTables | [![NuGet](https://buildstats.info/nuget/NooBIT.DataTables)](https://www.nuget.org/packages/NooBIT.DataTables/) |
+| NooBIT.DataTables.AspNetCore.Mvc | [![NuGet](https://buildstats.info/nuget/NooBIT.DataTables.AspNetCore.Mvc)](https://www.nuget.org/packages/NooBIT.DataTables.AspNetCore.Mvc/) |
 
 ---
 
