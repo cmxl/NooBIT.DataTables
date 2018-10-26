@@ -39,9 +39,6 @@ namespace NooBIT.DataTables
 
                 foreach (var column in vm.Columns)
                 {
-                    if (token.IsCancellationRequested)
-                        break;
-
                     query = await WhereAsync(query, vm, column, token);
                 }
 
@@ -50,23 +47,14 @@ namespace NooBIT.DataTables
                 var orderInstructions = GenerateSortInstructions(vm);
                 query = Sorter.SortBy(query, orderInstructions);
 
-                if (!token.IsCancellationRequested && vm.Length >= 0)
+                if (vm.Length >= 0)
                     query = query.Skip(vm.Start).Take(vm.Length);
 
                 var data = await GetValues(query, token);
                 foreach (var d in data)
                 {
-                    if (token.IsCancellationRequested)
-                        break;
-
                     var dict = await MapResultSetAsync(d, token);
-                    foreach (var m in dict)
-                    {
-                        if (token.IsCancellationRequested)
-                            break;
-
-                        result.Data.Add(m);
-                    }
+                    result.Data.Add(dict);
                 }
             }
             catch (Exception exception)
@@ -168,11 +156,11 @@ namespace NooBIT.DataTables
             return searchText;
         }
 
-        protected virtual async Task<IEnumerable<Dictionary<string, object>>> MapResultSetAsync(TEntity result, CancellationToken token)
+        protected virtual Task<Dictionary<string, object>> MapResultSetAsync(TEntity result, CancellationToken token)
         {
             var properties = result.GetType().GetProperties();
             var dict = Columns.ToDictionary(x => x.Name, x => x.Render(properties.FirstOrDefault(y => y.Name == x.Name)?.GetValue(result), result));
-            return await Task.WhenAll(Task.FromResult(dict));
+            return Task.FromResult(dict);
         }
 
         protected virtual Task<IQueryable<TEntity>> GlobalWhereAsync(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query);
