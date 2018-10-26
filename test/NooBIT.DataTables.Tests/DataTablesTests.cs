@@ -1,7 +1,7 @@
-using NooBIT.DataTables.Rendering;
-using NooBIT.DataTables.Tests.Fixtures;
 using System.Linq;
 using System.Threading.Tasks;
+using NooBIT.DataTables.Rendering;
+using NooBIT.DataTables.Tests.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 

@@ -1,13 +1,13 @@
-﻿using NooBIT.DataTables.Helpers;
-using NooBIT.DataTables.Models;
-using NooBIT.DataTables.Queries;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using NooBIT.DataTables.Helpers;
+using NooBIT.DataTables.Models;
+using NooBIT.DataTables.Queries;
 
 namespace NooBIT.DataTables
 {
@@ -48,7 +48,9 @@ namespace NooBIT.DataTables
                 query = Sorter.SortBy(query, orderInstructions);
 
                 if (vm.Length >= 0)
+                {
                     query = query.Skip(vm.Start).Take(vm.Length);
+                }
 
                 var data = await GetValues(query, token);
                 foreach (var d in data)
@@ -72,17 +74,22 @@ namespace NooBIT.DataTables
 
         private IEnumerable<SortInstruction> GenerateSortInstructions(AjaxProcessingViewModel vm)
         {
-            var instructions = new List<SortInstruction>();
             foreach (var o in vm.Order)
             {
-                var col = Columns.Single(x => x.Target == o.Column && x.Orderable);
-                instructions.AddRange(col.Orders.Select(x => new SortInstruction
+                var sortinstructions = Columns
+                    .Single(x => x.Target == o.Column && x.Orderable)
+                    .Orders
+                    .Select(x => new SortInstruction
+                    {
+                        Name = x.ColumnName,
+                        Direction = o.Dir.ToLower() == "asc" ? SortDirection.Ascending : SortDirection.Descending
+                    });
+
+                foreach (var instruction in sortinstructions)
                 {
-                    Name = x.ColumnName,
-                    Direction = o.Dir.ToLower() == "asc" ? SortDirection.Ascending : SortDirection.Descending
-                }));
+                    yield return instruction;
+                }
             }
-            return instructions;
         }
 
         protected virtual Column GetColumnTemplate(PropertyInfo x, int index) => new Column(this)
@@ -119,13 +126,17 @@ namespace NooBIT.DataTables
         {
             var handler = Error;
             if (handler == null)
+            {
                 return;
+            }
 
             var invocationList = handler.GetInvocationList();
             var handlerTasks = new Task[invocationList.Length];
 
             for (var i = 0; i < invocationList.Length; i++)
+            {
                 handlerTasks[i] = ((Func<object, DataTableErrorEventArgs, Task>)invocationList[i])(this, CreateOnErrorEventArgs(vm, exception));
+            }
 
             await Task.WhenAll(handlerTasks);
         }
@@ -149,11 +160,10 @@ namespace NooBIT.DataTables
 
         protected string GetSearchText(AjaxSearch search, AjaxColumn column)
         {
-            var searchText = column.Search.Value;
-            if (!string.IsNullOrWhiteSpace(search.Value))
-                searchText = search.Value;
-
-            return searchText;
+            // column search beats global search 
+            return !string.IsNullOrWhiteSpace(column.Search.Value)
+                ? column.Search.Value
+                : search.Value;
         }
 
         protected virtual Task<Dictionary<string, object>> MapResultSetAsync(TEntity result, CancellationToken token)
