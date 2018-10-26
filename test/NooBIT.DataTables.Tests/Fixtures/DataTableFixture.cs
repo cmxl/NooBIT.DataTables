@@ -9,13 +9,13 @@ namespace NooBIT.DataTables.Tests.Fixtures
         {
             QueryableService = new TestEntityQueryableService();
             Table = new TestEntityTable(QueryableService);
-            ViewModel = new TestAjaxViewModel();
+            Request = new TestRequest();
         }
 
         public TestEntityQueryableService QueryableService { get; }
 
         public TestEntityTable Table { get; }
 
-        public AjaxProcessingViewModel ViewModel { get; }
+        public DataTableRequest Request { get; }
     }
 }

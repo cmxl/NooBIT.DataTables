@@ -15,16 +15,16 @@ namespace NooBIT.DataTables.Sample.Domain
         {
         }
 
-        protected override Task<IQueryable<SampleData>> WhereAsync(IQueryable<SampleData> query, AjaxProcessingViewModel vm, AjaxColumn column, CancellationToken token)
+        protected override Task<IQueryable<SampleData>> WhereAsync(IQueryable<SampleData> query, DataTableRequest request, DataTableRequest.ColumnRequest column, CancellationToken token)
         {
             switch (column.Name?.ToLowerInvariant())
             {
                 case "name":
-                    if (IsSearchable(vm.Search, column, out string name)) 
+                    if (IsSearchable(request.Search, column, out string name)) 
                         return Task.FromResult(query.Where(x => x.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0));
                     break;
                 case "id":
-                    if (IsSearchable(vm.Search, column, out int id)) 
+                    if (IsSearchable(request.Search, column, out int id)) 
                         return Task.FromResult(query.Where(x => x.Id == id));
                     break;
             }

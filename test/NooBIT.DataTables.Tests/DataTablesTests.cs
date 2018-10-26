@@ -21,7 +21,7 @@ namespace NooBIT.DataTables.Tests
         [Fact]
         public async Task Table_Rendering_Does_Not_Crash()
         {
-            var result = await _fixture.Table.GetAsync(_fixture.ViewModel);
+            var result = await _fixture.Table.GetAsync(_fixture.Request);
             var renderer = new TableRenderer();
             var table = renderer.Render(_fixture.Table, result);
             var orderedEntities = _fixture.QueryableService.Get().OrderBy(x => x.Id).ToArray();

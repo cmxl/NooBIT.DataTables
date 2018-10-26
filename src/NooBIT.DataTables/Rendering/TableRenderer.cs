@@ -5,7 +5,7 @@ namespace NooBIT.DataTables.Rendering
 {
     public class TableRenderer : ITableRenderer
     {
-        public DataTable<TEntity>.Table Render<TEntity>(IDataTable<TEntity> dataTable, AjaxDataViewModel data) where TEntity : class
+        public DataTable<TEntity>.Table Render<TEntity>(IDataTable<TEntity> dataTable, DataTableResponse data) where TEntity : class
         {
             var rows = new List<DataTable<TEntity>.Row>();
 

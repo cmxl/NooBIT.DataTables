@@ -12,7 +12,7 @@ namespace NooBIT.DataTables.Tests.Models
         {
         }
 
-        protected override Task<IQueryable<TestEntity>> WhereAsync(IQueryable<TestEntity> query, AjaxProcessingViewModel vm, AjaxColumn column, CancellationToken token)
+        protected override Task<IQueryable<TestEntity>> WhereAsync(IQueryable<TestEntity> query, DataTableRequest request, DataTableRequest.ColumnRequest column, CancellationToken token = default)
         {
             return Task.FromResult(query);
         }

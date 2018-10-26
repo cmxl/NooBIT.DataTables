@@ -2,45 +2,45 @@
 
 namespace NooBIT.DataTables.Tests.Models
 {
-    public class TestAjaxViewModel : AjaxProcessingViewModel
+    public class TestRequest : DataTableRequest
     {
-        public TestAjaxViewModel()
+        public TestRequest()
         {
             Columns = new[]
                 {
-                    new AjaxColumn
+                    new ColumnRequest
                     {
                         Name = "Id",
                         Data = "Id",
                         Orderable = true,
                         Searchable = true,
-                        Search = new AjaxSearch
+                        Search = new SearchRequest
                         {
                             Value = null,
                             Regex = false
                         }
                     },
-                    new AjaxColumn
+                    new ColumnRequest
                     {
                         Name = "Name",
                         Data = "Name",
                         Orderable = true,
                         Searchable = true,
-                        Search = new AjaxSearch
+                        Search = new SearchRequest
                         {
                             Value = null,
                             Regex = false
                         }
                     }
                 };
-            Search = new AjaxSearch
+            Search = new SearchRequest
             {
                 Value = null,
                 Regex = false
             };
             Order = new[]
             {
-                    new AjaxOrder
+                    new OrderRequest
                     {
                         Column = 0,
                         Dir = "asc"

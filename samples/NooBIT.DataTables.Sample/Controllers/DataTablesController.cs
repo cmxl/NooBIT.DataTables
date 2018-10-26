@@ -16,9 +16,9 @@ namespace NooBIT.DataTables.Sample.Controllers
         }
 
         [HttpPost("/datatable")]
-        public async Task<IActionResult> DataTable(AjaxProcessingViewModel vm, CancellationToken token)
+        public async Task<IActionResult> DataTable(DataTableRequest request, CancellationToken token)
         {
-            var result = await _sampleTable.GetAsync(vm, token);
+            var result = await _sampleTable.GetAsync(request, token);
             if (!string.IsNullOrWhiteSpace(result.Error))
                 return BadRequest(result);
             return Ok(result);

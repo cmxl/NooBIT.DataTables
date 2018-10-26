@@ -6,18 +6,18 @@ namespace NooBIT.DataTables
 {
     public class DataTableErrorEventArgs : EventArgs
     {
-        public DataTableErrorEventArgs(AjaxProcessingViewModel vm, Exception exception) : this(vm, null, exception)
+        public DataTableErrorEventArgs(DataTableRequest request, Exception exception) : this(request, null, exception)
         {
         }
 
-        public DataTableErrorEventArgs(AjaxProcessingViewModel vm, IPrincipal principal, Exception exception)
+        public DataTableErrorEventArgs(DataTableRequest request, IPrincipal principal, Exception exception)
         {
-            AjaxProcessingViewModel = vm;
+            DataTableRequest = request;
             Principal = principal;
             Exception = exception;
         }
 
-        public AjaxProcessingViewModel AjaxProcessingViewModel { get; }
+        public DataTableRequest DataTableRequest { get; }
         public Exception Exception { get; }
         public IPrincipal Principal { get; }
     }

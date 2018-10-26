@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace NooBIT.DataTables.Models
 {
-    public class AjaxDataViewModel
+    public class DataTableResponse
     {
         [JsonProperty(PropertyName = "draw")]
         public int Draw { get; set; }

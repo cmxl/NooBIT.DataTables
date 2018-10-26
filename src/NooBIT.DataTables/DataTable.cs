@@ -23,11 +23,11 @@ namespace NooBIT.DataTables
             _queryableRequestService = queryableRequestService;
         }
 
-        public virtual async Task<AjaxDataViewModel> GetAsync(AjaxProcessingViewModel vm, CancellationToken token = default)
+        public virtual async Task<DataTableResponse> GetAsync(DataTableRequest request, CancellationToken token = default)
         {
-            var result = new AjaxDataViewModel
+            var result = new DataTableResponse
             {
-                Draw = vm.Draw
+                Draw = request.Draw
             };
 
             try
@@ -35,21 +35,21 @@ namespace NooBIT.DataTables
                 var query = _queryableRequestService.Get();
                 query = await GlobalWhereAsync(query, token);
 
-                result.RecordsTotal = await GetTotalRecordsCount(query, vm, token);
+                result.RecordsTotal = await GetTotalRecordsCount(query, request, token);
 
-                foreach (var column in vm.Columns)
+                foreach (var column in request.Columns)
                 {
-                    query = await WhereAsync(query, vm, column, token);
+                    query = await WhereAsync(query, request, column, token);
                 }
 
-                result.RecordsFiltered = await GetFilteredRecordsCount(query, vm, token);
+                result.RecordsFiltered = await GetFilteredRecordsCount(query, request, token);
 
-                var orderInstructions = GenerateSortInstructions(vm);
+                var orderInstructions = GenerateSortInstructions(request);
                 query = Sorter.SortBy(query, orderInstructions);
 
-                if (vm.Length >= 0)
+                if (request.Length >= 0)
                 {
-                    query = query.Skip(vm.Start).Take(vm.Length);
+                    query = query.Skip(request.Start).Take(request.Length);
                 }
 
                 var data = await GetValues(query, token);
@@ -61,8 +61,9 @@ namespace NooBIT.DataTables
             }
             catch (Exception exception)
             {
+                // TODO localizable string
                 result.Error = "\nEin unerwarteter Fehler ist aufgetreten.\nPrüfen Sie Ihre Eingaben und versuchen Sie es erneut.";
-                await OnError(vm, exception);
+                await OnError(request, exception);
             }
 
             return result;
@@ -72,9 +73,9 @@ namespace NooBIT.DataTables
         public virtual Dictionary<int, string> DefaultColumnOrder { get; } = new Dictionary<int, string> { { 0, SortDirections.Ascending } };
         public virtual int DefaultPageLength { get; } = 100;
 
-        private IEnumerable<SortInstruction> GenerateSortInstructions(AjaxProcessingViewModel vm)
+        private IEnumerable<SortInstruction> GenerateSortInstructions(DataTableRequest request)
         {
-            return vm.Order
+            return request.Order
                 .SelectMany(o => Columns
                     .Single(x => x.Target == o.Column && x.Orderable)
                     .Orders
@@ -111,11 +112,11 @@ namespace NooBIT.DataTables
 
         protected virtual Task<List<TEntity>> GetValues(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query.ToList());
 
-        protected virtual Task<int> GetTotalRecordsCount(IQueryable<TEntity> query, AjaxProcessingViewModel vm, CancellationToken token) => Task.FromResult(query.Count());
+        protected virtual Task<int> GetTotalRecordsCount(IQueryable<TEntity> query, DataTableRequest request, CancellationToken token) => Task.FromResult(query.Count());
 
-        protected virtual Task<int> GetFilteredRecordsCount(IQueryable<TEntity> query, AjaxProcessingViewModel vm, CancellationToken token) => Task.FromResult(query.Count());
+        protected virtual Task<int> GetFilteredRecordsCount(IQueryable<TEntity> query, DataTableRequest request, CancellationToken token) => Task.FromResult(query.Count());
 
-        private async Task OnError(AjaxProcessingViewModel vm, Exception exception)
+        private async Task OnError(DataTableRequest request, Exception exception)
         {
             var handler = Error;
             if (handler == null)
@@ -128,15 +129,15 @@ namespace NooBIT.DataTables
 
             for (var i = 0; i < invocationList.Length; i++)
             {
-                handlerTasks[i] = ((Func<object, DataTableErrorEventArgs, Task>)invocationList[i])(this, CreateOnErrorEventArgs(vm, exception));
+                handlerTasks[i] = ((Func<object, DataTableErrorEventArgs, Task>)invocationList[i])(this, CreateOnErrorEventArgs(request, exception));
             }
 
             await Task.WhenAll(handlerTasks);
         }
 
-        protected virtual DataTableErrorEventArgs CreateOnErrorEventArgs(AjaxProcessingViewModel vm, Exception exception) => new DataTableErrorEventArgs(vm, exception);
+        protected virtual DataTableErrorEventArgs CreateOnErrorEventArgs(DataTableRequest request, Exception exception) => new DataTableErrorEventArgs(request, exception);
 
-        protected bool IsSearchable<TValue>(AjaxSearch search, AjaxColumn column, out TValue searchValue)
+        protected bool IsSearchable<TValue>(DataTableRequest.SearchRequest search, DataTableRequest.ColumnRequest column, out TValue searchValue)
         {
             var isSearchable = IsSearchable(search, column);
             var searchText = GetSearchText(search, column);
@@ -144,14 +145,14 @@ namespace NooBIT.DataTables
             return isSearchable && success;
         }
 
-        protected bool IsSearchable(AjaxSearch search, AjaxColumn column)
+        protected bool IsSearchable(DataTableRequest.SearchRequest search, DataTableRequest.ColumnRequest column)
         {
             var searchText = GetSearchText(search, column);
             var col = Columns.Single(x => x.Name == column.Name);
             return col.Searchable && !string.IsNullOrWhiteSpace(searchText);
         }
 
-        protected string GetSearchText(AjaxSearch search, AjaxColumn column)
+        protected string GetSearchText(DataTableRequest.SearchRequest search, DataTableRequest.ColumnRequest column)
         {
             // column search beats global search 
             return !string.IsNullOrWhiteSpace(column.Search.Value)
@@ -166,9 +167,15 @@ namespace NooBIT.DataTables
             return Task.FromResult(dict);
         }
 
+        /// <summary>
+        /// Pre-filtering of all records before any other processing or altering of the query happens.
+        /// </summary>
+        /// <param name="query">The current query</param>
+        /// <param name="token">The <cref="CancellationToken">CancellationToken</cref></param>
+        /// <returns></returns>
         protected virtual Task<IQueryable<TEntity>> GlobalWhereAsync(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query);
 
-        protected abstract Task<IQueryable<TEntity>> WhereAsync(IQueryable<TEntity> query, AjaxProcessingViewModel vm, AjaxColumn column, CancellationToken token);
+        protected abstract Task<IQueryable<TEntity>> WhereAsync(IQueryable<TEntity> query, DataTableRequest request, DataTableRequest.ColumnRequest column, CancellationToken token);
 
         public sealed class Column
         {
@@ -251,7 +258,7 @@ namespace NooBIT.DataTables
 
     public interface IDataTable
     {
-        Task<AjaxDataViewModel> GetAsync(AjaxProcessingViewModel vm, CancellationToken token);
+        Task<DataTableResponse> GetAsync(DataTableRequest request, CancellationToken token);
         event Func<object, DataTableErrorEventArgs, Task> Error;
     }
 }
