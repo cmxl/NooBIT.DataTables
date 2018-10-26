@@ -92,12 +92,12 @@ Or if you want complete control over column generation:
     {
         // [...]
         
-        public override List<Column> GetColumns()
+        protected override Column[] GetColumnsInternal()
         {
             return typeof(TEntity)
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Select(GetColumnTemplate)
-                .ToList();
+                .ToArray();
         }
     }
 ```
