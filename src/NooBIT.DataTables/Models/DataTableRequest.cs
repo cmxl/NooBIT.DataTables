@@ -25,7 +25,6 @@ namespace NooBIT.DataTables.Models
         [JsonProperty(PropertyName = "_")]
         public long Timestamp { get; set; }
 
-
         public class ColumnRequest
         {
             [JsonProperty(PropertyName = "data")]
