@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NooBIT.DataTables.AspNetCore.Mvc.Renderers;
+using NooBIT.DataTables.Language;
 
 namespace NooBIT.DataTables.AspNetCore.Mvc
 {
@@ -18,6 +19,11 @@ namespace NooBIT.DataTables.AspNetCore.Mvc
         public static IHtmlContent DataTable<TEntity>(this IHtmlHelper<IDataTable<TEntity>> _, IDataTable<TEntity> dataTable) where TEntity : class
         {
             return TableRenderer.Render(dataTable);
+        }
+
+        public static IHtmlContent Language(this IHtmlHelper _, LanguageSettings languageSettings)
+        {
+            return JsonRenderer.Render(languageSettings);
         }
     }
 }

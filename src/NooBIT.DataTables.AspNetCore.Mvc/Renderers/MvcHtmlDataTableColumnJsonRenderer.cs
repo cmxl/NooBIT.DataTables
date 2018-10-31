@@ -26,8 +26,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
                 }
             };
 
-            var json = JsonConvert.SerializeObject(columnDefs, Formatting.Indented);
-            return new HtmlString(json);
+            return JsonRenderer.Render(columnDefs);
         }
     }
 }

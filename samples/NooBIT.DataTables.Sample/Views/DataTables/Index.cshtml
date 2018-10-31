@@ -12,10 +12,11 @@
 	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script>
 		$(function() {
-			$('table').DataTable({
-				columnDefs: @Html.DataTableColumns(Model.Columns),
-				serverSide: true,
-				processing: true,
+            $('table').DataTable({
+                columnDefs: @Html.DataTableColumns(Model.Columns),
+                serverSide: true,
+                processing: true,
+                language: { url: '@Url.Action("Language", "DataTables", new { language = "en" })' },
 				ajax: function(data, callback, settings) {
 					$.ajax({
 						url: '@Url.Action("DataTable")',
