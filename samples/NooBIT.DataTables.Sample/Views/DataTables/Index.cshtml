@@ -1,5 +1,5 @@
 ﻿@using NooBIT.DataTables.AspNetCore.Mvc;
-@model NooBIT.DataTables.IDataTable<NooBIT.DataTables.Sample.Model.SampleData>
+@model NooBIT.DataTables.Sample.ViewModels.SampleViewModel;
 
 @{
     ViewBag.Title = "Sample";
@@ -13,10 +13,15 @@
     <script>
 		$(function() {
             $('table').DataTable({
-                columnDefs: @Html.DataTableColumns(Model.Columns),
+                columnDefs: @Html.DataTableColumns(Model.Table.Columns),
                 serverSide: true,
                 processing: true,
-                language: { url: '@Url.Action("Language", "DataTables", new { language = "en" })' },
+                // via ajax
+                language: { url: '@Url.Action("Lang", new { language = Model.Language.CultureInfo.Name })' },
+                @*
+                // directly rendered into script
+                language: @Html.Language(Model.Language),
+                *@
 				ajax: function(data, callback, settings) {
 					$.ajax({
 						url: '@Url.Action("DataTable")',
@@ -35,4 +40,5 @@
 }
 
 <h2>Sample</h2>
-@Html.DataTable(Model)
+@Html.DataTable(Model.Table)
+

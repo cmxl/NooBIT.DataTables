@@ -101,3 +101,6 @@ Or if you want complete control over column generation:
         }
     }
 ```
+
+Now with support for languages!
+Documentation coming soon! <3

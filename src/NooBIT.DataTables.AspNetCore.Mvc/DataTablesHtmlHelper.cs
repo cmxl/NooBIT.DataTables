@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NooBIT.DataTables.AspNetCore.Mvc.Renderers;
-using NooBIT.DataTables.Language;
+using NooBIT.DataTables.Internationalization;
 
 namespace NooBIT.DataTables.AspNetCore.Mvc
 {
@@ -11,12 +11,12 @@ namespace NooBIT.DataTables.AspNetCore.Mvc
         private static readonly MvcHtmlDataTableRenderer TableRenderer = new MvcHtmlDataTableRenderer();
         private static readonly MvcHtmlDataTableColumnJsonRenderer ColumnRenderer = new MvcHtmlDataTableColumnJsonRenderer();
 
-        public static IHtmlContent DataTableColumns<TEntity>(this IHtmlHelper<IDataTable<TEntity>> _, IEnumerable<DataTable<TEntity>.Column> columns) where TEntity : class
+        public static IHtmlContent DataTableColumns<TEntity>(this IHtmlHelper _, IEnumerable<DataTable<TEntity>.Column> columns) where TEntity : class
         {
             return ColumnRenderer.Render(columns);
         }
 
-        public static IHtmlContent DataTable<TEntity>(this IHtmlHelper<IDataTable<TEntity>> _, IDataTable<TEntity> dataTable) where TEntity : class
+        public static IHtmlContent DataTable<TEntity>(this IHtmlHelper _, IDataTable<TEntity> dataTable) where TEntity : class
         {
             return TableRenderer.Render(dataTable);
         }

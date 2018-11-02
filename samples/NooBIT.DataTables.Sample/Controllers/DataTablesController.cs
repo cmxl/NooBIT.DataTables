@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using NooBIT.DataTables.Language;
+using NooBIT.DataTables.Internationalization;
 using NooBIT.DataTables.Models;
 using NooBIT.DataTables.Sample.Model;
+using NooBIT.DataTables.Sample.ViewModels;
 
 namespace NooBIT.DataTables.Sample.Controllers
 {
@@ -14,12 +14,6 @@ namespace NooBIT.DataTables.Sample.Controllers
     {
         private readonly IDataTable<SampleData> _sampleTable;
         private readonly ILoggerFactory _loggerFactory;
-
-        private readonly Dictionary<string, LanguageSettings> Languages = new Dictionary<string, LanguageSettings>
-        {
-            { "de", LanguageSettings.German },
-            { "en", LanguageSettings.English }
-        };
 
         public DataTablesController(
             ILoggerFactory loggerFactory,
@@ -50,15 +44,19 @@ namespace NooBIT.DataTables.Sample.Controllers
         [HttpGet("/")]
         public IActionResult Index()
         {
-            return View(_sampleTable);
+            var viewModel = new SampleViewModel
+            {
+                Table = _sampleTable,
+                Language = Language.German
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet("/language/{language}")]
-        public IActionResult Language(string language)
+        public IActionResult Lang(string language)
         {
-            // language parameter omitted
-            // could be evaluated against dictionary or do whatever you want
-            return Json(Languages[language], new JsonSerializerSettings { Formatting = Formatting.Indented });
+            return Json(Language.All.Value[language], new JsonSerializerSettings { Formatting = Formatting.Indented });
         }
     }
 }
