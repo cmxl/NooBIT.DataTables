@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,10 +38,8 @@ namespace NooBIT.DataTables
 
                 result.RecordsTotal = await GetTotalRecordsCount(query, request, token);
 
-                foreach (var column in request.Columns)
-                {
-                    query = await WhereAsync(query, request, column, token);
-                }
+                var expr = BuildWhereExpression(request);
+                query = query.Where(expr);
 
                 result.RecordsFiltered = await GetFilteredRecordsCount(query, request, token);
 
@@ -67,6 +66,27 @@ namespace NooBIT.DataTables
             }
 
             return result;
+        }
+
+        protected virtual Expression<Func<TEntity, bool>> BuildWhereExpression(DataTableRequest request)
+        {
+            var searchRequested = request.Columns.Any(column => IsSearchable(request.Search, column));
+            var expression = searchRequested ? (x => false) : (Expression<Func<TEntity, bool>>)(x => true);
+
+            foreach (var column in request.Columns)
+            {
+                if (IsSearchable(request.Search, column, out string searchValue))
+                {
+                    var property = typeof(TEntity).GetProperty(column.Name);
+
+                    if (!ConvertTypeHelper.TryConvert(searchValue, property.PropertyType, out var typedValue))
+                        continue;
+
+                    var lambda = ExpressionHelper.BuildExpression<TEntity>(property, typedValue);
+                    expression = expression.Or(lambda);
+                }
+            }
+            return expression;
         }
 
         public event Func<object, DataTableErrorEventArgs, Task> Error;
@@ -174,8 +194,6 @@ namespace NooBIT.DataTables
         /// <param name="token">The <cref="CancellationToken">CancellationToken</cref></param>
         /// <returns></returns>
         protected virtual Task<IQueryable<TEntity>> GlobalWhereAsync(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query);
-
-        protected abstract Task<IQueryable<TEntity>> WhereAsync(IQueryable<TEntity> query, DataTableRequest request, DataTableRequest.ColumnRequest column, CancellationToken token);
 
         public sealed class Column
         {

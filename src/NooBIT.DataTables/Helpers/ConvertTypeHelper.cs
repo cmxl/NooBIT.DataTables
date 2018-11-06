@@ -64,5 +64,19 @@ namespace NooBIT.DataTables.Helpers
 
             return success;
         }
+
+        public static bool TryConvert(string obj, Type destinationType, out object value)
+        {
+            try
+            {
+                value = Convert.ChangeType(obj, destinationType);
+                return true;
+            }
+            catch
+            {
+                value = default;
+                return false;
+            }
+        }
     }
 }

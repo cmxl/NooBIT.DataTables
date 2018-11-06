@@ -15,22 +15,22 @@ namespace NooBIT.DataTables.Sample.Domain
         {
         }
 
-        protected override Task<IQueryable<SampleData>> WhereAsync(IQueryable<SampleData> query, DataTableRequest request, DataTableRequest.ColumnRequest column, CancellationToken token)
-        {
-            switch (column.Name?.ToLowerInvariant())
-            {
-                case "name":
-                    if (IsSearchable(request.Search, column, out string name)) 
-                        return Task.FromResult(query.Where(x => x.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0));
-                    break;
-                case "id":
-                    if (IsSearchable(request.Search, column, out int id)) 
-                        return Task.FromResult(query.Where(x => x.Id == id));
-                    break;
-            }
+        //protected override Task<IQueryable<SampleData>> WhereAsync(IQueryable<SampleData> query, DataTableRequest request, DataTableRequest.ColumnRequest column, CancellationToken token)
+        //{
+        //    switch (column.Name?.ToLowerInvariant())
+        //    {
+        //        case "name":
+        //            if (IsSearchable(request.Search, column, out string name)) 
+        //                return Task.FromResult(query.Where(x => x.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0));
+        //            break;
+        //        case "id":
+        //            if (IsSearchable(request.Search, column, out int id)) 
+        //                return Task.FromResult(query.Where(x => x.Id == id));
+        //            break;
+        //    }
 
-            return Task.FromResult(query);
-        }
+        //    return Task.FromResult(query);
+        //}
 
         protected override Column GetColumnTemplate(PropertyInfo x, int index)
         {
