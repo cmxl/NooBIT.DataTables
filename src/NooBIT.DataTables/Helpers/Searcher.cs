@@ -22,13 +22,13 @@ namespace NooBIT.DataTables.Helpers
                 if (x.Value == null)
                     return;
 
-                var value = Convert.ChangeType(x.Value, x.Type);
-                var parameter = Expression.Parameter(typeof(TSource), "x");
                 var property = typeof(TSource).GetProperty(x.Name);
                 if (property == null)
                     return;
 
+                var parameter = Expression.Parameter(typeof(TSource), "x");                              
                 var left = Expression.Property(parameter, property);
+                var value = Convert.ChangeType(x.Value, x.Type);
                 var body = Expression.Equal(left, Expression.Constant(value));
                 var expression = Expression.Lambda<Func<TSource, bool>>(body, parameter);
                 where = where.Or(expression);
