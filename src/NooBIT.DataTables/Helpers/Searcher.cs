@@ -7,9 +7,9 @@ namespace NooBIT.DataTables.Helpers
 {
     public static class Searcher
     {
-        public static IQueryable<TSource> SearchBy<TSource>(IQueryable<TSource> source, List<SearchInstruction<TSource>> instructions)
+        public static IQueryable<T> SearchBy<T>(IQueryable<T> source, List<SearchInstruction<T>> instructions)
         {
-            Expression<Func<TSource, bool>> where = x => (instructions == null || instructions.Count == 0);
+            Expression<Func<T, bool>> where = x => (instructions == null || instructions.Count == 0);
 
             instructions.ForEach(x =>
             {
@@ -22,15 +22,14 @@ namespace NooBIT.DataTables.Helpers
                 if (x.Value == null)
                     return;
 
-                var property = typeof(TSource).GetProperty(x.Name);
+                var property = typeof(T).GetProperty(x.Name);
                 if (property == null)
                     return;
 
-                var parameter = Expression.Parameter(typeof(TSource), "x");                              
-                var left = Expression.Property(parameter, property);
-                var value = Convert.ChangeType(x.Value, x.Type);
-                var body = Expression.Equal(left, Expression.Constant(value));
-                var expression = Expression.Lambda<Func<TSource, bool>>(body, parameter);
+                if (!ConvertTypeHelper.TryConvert(x.Value, x.Type, out var value))
+                    return;
+
+                var expression = ExpressionHelper.BuildExpression<T>(property, value);
                 where = where.Or(expression);
 
             });

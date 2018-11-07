@@ -65,7 +65,7 @@ namespace NooBIT.DataTables.Helpers
             return success;
         }
 
-        public static bool TryConvert(string obj, Type destinationType, out object value)
+        public static bool TryConvert(object obj, Type destinationType, out object value)
         {
             try
             {
