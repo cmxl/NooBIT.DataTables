@@ -26,15 +26,17 @@ namespace NooBIT.DataTables.Tests
             var table = renderer.Render(_fixture.Table, result);
             var orderedEntities = _fixture.QueryableService.Get().OrderBy(x => x.Id).ToArray();
 
-            Assert.Equal(table.Rows.Length, orderedEntities.Length);
-            Assert.Equal(table.Rows[0].Columns.Length, table.DataTable.Columns.Length);
-
-            for (var i = 0; i < orderedEntities.Length; i++)
+            Assert.Equal(orderedEntities.Length, table.Rows.Length);
+            for (int i = 0; i < table.Rows.Length; i++)
             {
-                Assert.Equal((int)table.Rows[i]["Id"].Value, orderedEntities[i].Id);
-                Assert.Equal((string)table.Rows[i]["Name"].Value, orderedEntities[i].Name);
-                Assert.Equal(table.Rows[i][0].Column.Name, table.DataTable.Columns.Single(x => x.Target == 0).Name);
-                Assert.Equal(table.Rows[i][1].Column.Name, table.DataTable.Columns.Single(x => x.Target == 1).Name);
+                Assert.Equal(table.DataTable.Columns.Length, table.Rows[i].Columns.Length);
+                Assert.Equal(orderedEntities[i].Id, (int)table.Rows[i]["Id"].Value);
+                Assert.Equal(orderedEntities[i].Name, (string)table.Rows[i]["Name"].Value);
+                for (int j = 0; j < table.Columns.Length; j++)
+                {
+                    Assert.Equal(table.DataTable.Columns.Single(x => x.Target == j).Name, table.Rows[i][j].Column.Name);
+                    Assert.Equal(table.DataTable.Columns[j].Name, table.Rows[i][j].Column.Name);
+                }
             }
         }
     }
