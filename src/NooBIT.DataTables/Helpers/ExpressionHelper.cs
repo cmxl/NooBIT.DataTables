@@ -6,18 +6,19 @@ namespace NooBIT.DataTables.Helpers
 {
     public static class ExpressionHelper
     {
+        private static readonly MethodInfo _compareMethod = typeof(string).GetMethod("IndexOf", new[] { typeof(string), typeof(StringComparison) });
+
         public static Expression<Func<T, bool>> BuildExpression<T>(PropertyInfo property, object value) => property.PropertyType == typeof(string)
             ? Contains<T>(property, value as string)
             : Equal<T>(property, value);
 
         public static Expression<Func<T, bool>> Contains<T>(PropertyInfo propertyInfo, string value)
         {
-            var method = typeof(string).GetMethod("IndexOf", new[] { typeof(string), typeof(StringComparison) });
             var parameterExp = Expression.Parameter(typeof(T), "x");
             var propertyExp = Expression.Property(parameterExp, propertyInfo.Name);
             var someValue = Expression.Constant(value, typeof(string));
             var comparison = Expression.Constant(StringComparison.OrdinalIgnoreCase, typeof(StringComparison));
-            var containsMethodExp = Expression.Call(propertyExp, method, someValue, comparison);
+            var containsMethodExp = Expression.Call(propertyExp, _compareMethod, someValue, comparison);
             var compareExpression = Expression.GreaterThanOrEqual(containsMethodExp, Expression.Constant(0));
 
             return Expression.Lambda<Func<T, bool>>(compareExpression, parameterExp);
