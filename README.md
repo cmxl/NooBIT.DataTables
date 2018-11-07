@@ -29,29 +29,6 @@ Implement your custom table like this:
         public EmployeeTable(IQueryableService<Employee> queryableService) : base(queryableService)
         {
         }
-
-        protected override Task<IQueryable<Employee>> WhereAsync(IQueryable<Employee> query, AjaxProcessingViewModel vm, AjaxColumn column, CancellationToken token)
-        {
-            // add your filtering here
-            switch(column.Name?.ToLower())
-            {
-                case "name":
-                    if(IsSearchable(vm.Search, column, out string name))
-                    {
-                        return Task.FromResult(query.Where(x => x.Name.Contains(name)));
-                    }
-                    break;
-
-                case "id":
-                    if(IsSearchable(vm.Search, column, out int id))
-                    {
-                        return Task.FromResult(query.Where(x => x.Id == id);
-                    }
-                    break;
-            }
-
-            return Task.FromResult(query);
-        }
     }
 ```
 
@@ -102,5 +79,4 @@ Or if you want complete control over column generation:
     }
 ```
 
-Now with support for languages!
-Documentation coming soon! <3
+_TODO language documentation_
