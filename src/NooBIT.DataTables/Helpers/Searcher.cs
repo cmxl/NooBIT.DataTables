@@ -15,7 +15,7 @@ namespace NooBIT.DataTables.Helpers
             {
                 if (x.Expression != null)
                 {
-                    where = OrExpression(where, x.Expression);
+                    where = where.Or(x.Expression);
                     return;
                 }
 
@@ -31,18 +31,11 @@ namespace NooBIT.DataTables.Helpers
                 var left = Expression.Property(parameter, property);
                 var body = Expression.Equal(left, Expression.Constant(value));
                 var expression = Expression.Lambda<Func<TSource, bool>>(body, parameter);
-                where = OrExpression(where, expression);
+                where = where.Or(expression);
 
             });
 
             return source.Where(where);
-        }
-
-        private static Expression<Func<TSource, bool>> OrExpression<TSource>(Expression<Func<TSource, bool>> firstExpression, Expression<Func<TSource, bool>> secondExpression)
-        {
-            var parameter = Expression.Parameter(typeof(TSource), "x");
-            var body = Expression.Or(Expression.Invoke(firstExpression, parameter), Expression.Invoke(secondExpression, parameter));
-            return Expression.Lambda<Func<TSource, bool>>(body, parameter);
         }
     }
 
