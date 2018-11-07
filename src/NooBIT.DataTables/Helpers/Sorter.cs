@@ -34,7 +34,7 @@ namespace NooBIT.DataTables.Helpers
                 });
         }
 
-        public void Register<TKey>(string name, Expression<Func<TSource, TKey>> selector)
+        private void Register<TKey>(string name, Expression<Func<TSource, TKey>> selector)
         {
             _firstPasses.Add(name, s => s.OrderBy(selector));
             _firstDescendingPasses.Add(name, s => s.OrderByDescending(selector));
@@ -42,7 +42,7 @@ namespace NooBIT.DataTables.Helpers
             _nextDescendingPasses.Add(name, s => s.ThenByDescending(selector));
         }
 
-        public void Register<TKey>(Expression<Func<TSource, TKey>> selector)
+        private void Register<TKey>(Expression<Func<TSource, TKey>> selector)
         {
             var name = GetMemberName(selector);
             Register(name, selector);
