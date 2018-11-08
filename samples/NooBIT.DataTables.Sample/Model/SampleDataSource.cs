@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NooBIT.DataTables.Queries;
 
 namespace NooBIT.DataTables.Sample.Model
 {
-    public class SampleDataStore
+    public class SampleDataSource : IDataSource<SampleData>
     {
         private static readonly string[] Names =
         {
@@ -25,9 +26,14 @@ namespace NooBIT.DataTables.Sample.Model
 
         public static readonly List<SampleData> SampleData;
 
-        static SampleDataStore()
+        static SampleDataSource()
         {
             SampleData = Names.Select((name, index) => new SampleData {Id = index, Name = name}).ToList();
+        }
+
+        public IQueryable<SampleData> Get()
+        {
+            return SampleData.AsQueryable();
         }
     }
 }

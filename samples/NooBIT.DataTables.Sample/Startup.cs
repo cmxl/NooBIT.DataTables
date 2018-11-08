@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using NooBIT.DataTables.Queries;
-using NooBIT.DataTables.Sample.Domain;
 using NooBIT.DataTables.Sample.Model;
 
 namespace NooBIT.DataTables.Sample
@@ -16,15 +15,18 @@ namespace NooBIT.DataTables.Sample
         {
             services.AddMvc();
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-            services.AddTransient<IDataSource<SampleData>, SampleDataQueryableRequestService>();
-            services.AddTransient<IDataTable<SampleData>, SampleDataTable>();
+            services.AddTransient<IDataSource<SampleData>, SampleDataSource>();
+            services.AddTransient<IDataTable<SampleData>, DataTable<SampleData>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
+            }
+
             app.UseMvcWithDefaultRoute();
         }
     }
