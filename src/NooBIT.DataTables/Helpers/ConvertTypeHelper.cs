@@ -18,12 +18,12 @@ namespace NooBIT.DataTables.Helpers
 
             try
             {
-                value = (TValue) Convert.ChangeType(obj, typeof(TValue));
+                value = (TValue)Convert.ChangeType(obj, typeof(TValue));
                 return true;
             }
             catch
             {
-                value = default(TValue);
+                value = default;
                 return false;
             }
         }
@@ -32,7 +32,7 @@ namespace NooBIT.DataTables.Helpers
         {
             if (string.IsNullOrWhiteSpace(obj))
             {
-                value = default(TValue);
+                value = default;
                 return true;
             }
 
@@ -48,7 +48,7 @@ namespace NooBIT.DataTables.Helpers
             }
             catch
             {
-                value = default(TValue);
+                value = default;
                 return false;
             }
         }
@@ -56,12 +56,7 @@ namespace NooBIT.DataTables.Helpers
         private static bool TryParseDateTime<TValue>(string obj, out TValue value)
         {
             var success = DateTime.TryParse(obj, out var dateTime);
-
-            if (success)
-                value = (TValue)(object)dateTime;
-            else
-                value = default(TValue);
-
+            value = success ? (TValue)(object)dateTime : (default);
             return success;
         }
 

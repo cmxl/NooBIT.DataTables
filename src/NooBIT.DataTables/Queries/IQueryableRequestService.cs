@@ -2,8 +2,8 @@
 
 namespace NooBIT.DataTables.Queries
 {
-    public interface IQueryableRequestService<out TEntity> where TEntity : class
+    public interface IQueryableRequestService<out T> where T : class
     {
-        IQueryable<TEntity> Get();
+        IQueryable<T> Get();
     }
 }

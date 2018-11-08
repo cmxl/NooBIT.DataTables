@@ -24,7 +24,7 @@ namespace NooBIT.DataTables.Sample
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();            
+                app.UseDeveloperExceptionPage();
             app.UseMvcWithDefaultRoute();
         }
     }

@@ -5,13 +5,13 @@ namespace NooBIT.DataTables.Rendering
 {
     public class TableRenderer : ITableRenderer
     {
-        public DataTable<TEntity>.Table Render<TEntity>(IDataTable<TEntity> dataTable, DataTableResponse data) where TEntity : class
+        public DataTable<T>.Table Render<T>(IDataTable<T> dataTable, DataTableResponse data) where T : class
         {
-            var rows = new List<DataTable<TEntity>.Row>();
+            var rows = new List<DataTable<T>.Row>();
 
             foreach (Dictionary<string, object> d in data.Data)
             {
-                var row = new DataTable<TEntity>.Row(dataTable);
+                var row = new DataTable<T>.Row(dataTable);
                 for (var i = 0; i < row.Columns.Length; i++)
                 {
                     if (d.ContainsKey(row[i].Column.Name))
@@ -23,7 +23,7 @@ namespace NooBIT.DataTables.Rendering
                 rows.Add(row);
             }
 
-            var table = new DataTable<TEntity>.Table(dataTable)
+            var table = new DataTable<T>.Table(dataTable)
             {
                 Rows = rows.ToArray(),
                 TotalRecords = data.RecordsTotal,

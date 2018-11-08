@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Html;
-using Newtonsoft.Json;
 
 namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
 {
     internal class MvcHtmlDataTableColumnJsonRenderer
     {
-        public IHtmlContent Render<TEntity>(IEnumerable<DataTable<TEntity>.Column> columns) where TEntity : class
+        public IHtmlContent Render<T>(IEnumerable<DataTable<T>.Column> columns) where T : class
         {
             var columnDefs = new List<dynamic>(columns.Select(x => new
             {

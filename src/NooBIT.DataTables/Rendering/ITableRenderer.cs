@@ -4,6 +4,6 @@ namespace NooBIT.DataTables.Rendering
 {
     public interface ITableRenderer
     {
-        DataTable<TEntity>.Table Render<TEntity>(IDataTable<TEntity> dataTable, DataTableResponse data) where TEntity : class;
+        DataTable<T>.Table Render<T>(IDataTable<T> dataTable, DataTableResponse data) where T : class;
     }
 }

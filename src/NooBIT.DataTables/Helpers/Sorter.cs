@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace NooBIT.DataTables.Helpers
 {
-    public class Sorter<TSource> : ISorter<TSource>
+    public class Sorter<T> : ISorter<T>
     {
         private readonly FirstPasses _firstDescendingPasses;
         private readonly FirstPasses _firstPasses;
@@ -20,7 +20,7 @@ namespace NooBIT.DataTables.Helpers
             _nextPasses = new NextPasses();
             _nextDescendingPasses = new NextPasses();
 
-            var type = typeof(TSource);
+            var type = typeof(T);
             type
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToList()
@@ -34,7 +34,7 @@ namespace NooBIT.DataTables.Helpers
                 });
         }
 
-        private void Register<TKey>(string name, Expression<Func<TSource, TKey>> selector)
+        private void Register<TKey>(string name, Expression<Func<T, TKey>> selector)
         {
             _firstPasses.Add(name, s => s.OrderBy(selector));
             _firstDescendingPasses.Add(name, s => s.OrderByDescending(selector));
@@ -42,13 +42,13 @@ namespace NooBIT.DataTables.Helpers
             _nextDescendingPasses.Add(name, s => s.ThenByDescending(selector));
         }
 
-        private void Register<TKey>(Expression<Func<TSource, TKey>> selector)
+        private void Register<TKey>(Expression<Func<T, TKey>> selector)
         {
             var name = GetMemberName(selector);
             Register(name, selector);
         }
 
-        private string GetMemberName<TKey>(Expression<Func<TSource, TKey>> selector)
+        private string GetMemberName<TKey>(Expression<Func<T, TKey>> selector)
         {
             if (!(selector.Body is MemberExpression memberExpression))
                 throw new ArgumentException($"Expression '{selector}' is not a {typeof(MemberExpression)}", nameof(selector));
@@ -56,45 +56,45 @@ namespace NooBIT.DataTables.Helpers
             return memberExpression.Member.Name;
         }
 
-        public IOrderedQueryable<TSource> SortBy(IQueryable<TSource> source, IEnumerable<SortInstruction> instructions)
+        public IOrderedQueryable<T> SortBy(IQueryable<T> source, IEnumerable<SortInstruction> instructions)
         {
-            IOrderedQueryable<TSource> result = null;
+            IOrderedQueryable<T> result = null;
 
             foreach (var instruction in instructions)
                 result = result == null ? SortFirst(instruction, source) : SortNext(instruction, result);
 
             if (result == null)
-                return (IOrderedQueryable<TSource>) source;
+                return (IOrderedQueryable<T>)source;
 
             return result;
         }
 
-        private IOrderedQueryable<TSource> SortFirst(SortInstruction instruction, IQueryable<TSource> source)
+        private IOrderedQueryable<T> SortFirst(SortInstruction instruction, IQueryable<T> source)
         {
             if (instruction.Direction == SortDirection.Ascending)
                 return _firstPasses[instruction.Name].Invoke(source);
             return _firstDescendingPasses[instruction.Name].Invoke(source);
         }
 
-        private IOrderedQueryable<TSource> SortNext(SortInstruction instruction, IOrderedQueryable<TSource> source)
+        private IOrderedQueryable<T> SortNext(SortInstruction instruction, IOrderedQueryable<T> source)
         {
             if (instruction.Direction == SortDirection.Ascending)
                 return _nextPasses[instruction.Name].Invoke(source);
             return _nextDescendingPasses[instruction.Name].Invoke(source);
         }
 
-        private class FirstPasses : Dictionary<string, Func<IQueryable<TSource>, IOrderedQueryable<TSource>>>
+        private class FirstPasses : Dictionary<string, Func<IQueryable<T>, IOrderedQueryable<T>>>
         {
         }
 
-        private class NextPasses : Dictionary<string, Func<IOrderedQueryable<TSource>, IOrderedQueryable<TSource>>>
+        private class NextPasses : Dictionary<string, Func<IOrderedQueryable<T>, IOrderedQueryable<T>>>
         {
         }
     }
 
-    public interface ISorter<TSource>
+    public interface ISorter<T>
     {
-        IOrderedQueryable<TSource> SortBy(IQueryable<TSource> source, IEnumerable<SortInstruction> instructions);
+        IOrderedQueryable<T> SortBy(IQueryable<T> source, IEnumerable<SortInstruction> instructions);
     }
 
     public class SortInstruction

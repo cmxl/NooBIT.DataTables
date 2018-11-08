@@ -38,7 +38,7 @@ namespace NooBIT.DataTables.Helpers
         }
     }
 
-    public class SearchInstruction<TSource>
+    public class SearchInstruction<T>
     {
         internal SearchInstruction() { }
 
@@ -46,15 +46,15 @@ namespace NooBIT.DataTables.Helpers
         private string _name;
         internal Func<string> NameFunc { get; set; }
         public string Name => _name ?? (_name = NameFunc?.Invoke());
-        public Type Type => _type ?? (_type = typeof(TSource).GetProperty(Name).PropertyType);
+        public Type Type => _type ?? (_type = typeof(T).GetProperty(Name).PropertyType);
         public object Value { get; internal set; }
-        internal Expression<Func<TSource, bool>> Expression { get; private set; }
+        internal Expression<Func<T, bool>> Expression { get; private set; }
 
         /// <summary>
         /// Default search expression is replaced by this custom expression.
         /// </summary>
         /// <param name="expression">Custom expression</param>
-        public void UseCustomExpression(Expression<Func<TSource, bool>> expression)
+        public void UseCustomExpression(Expression<Func<T, bool>> expression)
         {
             Expression = expression;
         }

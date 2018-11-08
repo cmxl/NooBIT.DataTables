@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
 
 namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
 {
@@ -8,7 +8,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
     {
         private readonly MvcHtmlEditorRenderer _editorRenderer = new MvcHtmlEditorRenderer();
 
-        public IHtmlContent Render<TEntity>(IDataTable<TEntity> dataTable) where TEntity : class
+        public IHtmlContent Render<T>(IDataTable<T> dataTable) where T : class
         {
             var table = new TagBuilder("table");
             table.AddCssClass("compact");
@@ -23,7 +23,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return table;
         }
 
-        private IHtmlContent CreateTableFooter<TEntity>(IDataTable<TEntity> dataTable) where TEntity : class
+        private IHtmlContent CreateTableFooter<T>(IDataTable<T> dataTable) where T : class
         {
             if (dataTable.Columns.All(x => x.Footer == null))
                 return null;
@@ -46,7 +46,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return tfoot;
         }
 
-        private IHtmlContent CreateTableHeader<TEntity>(IDataTable<TEntity> dataTable) where TEntity : class
+        private IHtmlContent CreateTableHeader<T>(IDataTable<T> dataTable) where T : class
         {
             var thead = new TagBuilder("thead");
             var tr = new TagBuilder("tr");
@@ -87,7 +87,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return _editorRenderer.Render(footer.Editor);
         }
 
-        private IHtmlContent CreateFilter<TEntity>(DataTable<TEntity>.Column column) where TEntity : class => column.Header.Filter == null
+        private IHtmlContent CreateFilter<T>(DataTable<T>.Column column) where T : class => column.Header.Filter == null
                 ? null
                 : _editorRenderer.Render(column.Header.Filter);
     }

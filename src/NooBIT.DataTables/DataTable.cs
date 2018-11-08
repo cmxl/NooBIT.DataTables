@@ -11,14 +11,14 @@ using NooBIT.DataTables.Queries;
 
 namespace NooBIT.DataTables
 {
-    public abstract class DataTable<TEntity> : IDataTable<TEntity> where TEntity : class
+    public abstract class DataTable<T> : IDataTable<T> where T : class
     {
-        private readonly IQueryableRequestService<TEntity> _queryableRequestService;
-        protected readonly ISorter<TEntity> Sorter = new Sorter<TEntity>();
+        private readonly IQueryableRequestService<T> _queryableRequestService;
+        protected readonly ISorter<T> Sorter = new Sorter<T>();
         private Column[] _columns;
 
         public DataTable(
-            IQueryableRequestService<TEntity> queryableRequestService)
+            IQueryableRequestService<T> queryableRequestService)
         {
             _queryableRequestService = queryableRequestService;
         }
@@ -51,33 +51,33 @@ namespace NooBIT.DataTables
             return result;
         }
 
-        private async Task<IQueryable<TEntity>> PreFilter(IQueryable<TEntity> query, CancellationToken token) => await GlobalWhereAsync(query, token);
-        private async Task<IQueryable<TEntity>> TotalRecords(IQueryable<TEntity> query, DataTableResponse result, CancellationToken token)
+        private async Task<IQueryable<T>> PreFilter(IQueryable<T> query, CancellationToken token) => await GlobalWhereAsync(query, token);
+        private async Task<IQueryable<T>> TotalRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token)
         {
             result.RecordsTotal = await GetTotalRecordsCount(query, token);
             return query;
         }
-        private IQueryable<TEntity> Filter(IQueryable<TEntity> query, DataTableRequest request) => Where(query, request);
-        private async Task<IQueryable<TEntity>> FilteredRecords(IQueryable<TEntity> query, DataTableResponse result, CancellationToken token)
+        private IQueryable<T> Filter(IQueryable<T> query, DataTableRequest request) => Where(query, request);
+        private async Task<IQueryable<T>> FilteredRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token)
         {
             result.RecordsFiltered = await GetFilteredRecordsCount(query, token);
             return query;
         }
 
-        private IQueryable<TEntity> Sort(IQueryable<TEntity> query, DataTableRequest request)
+        private IQueryable<T> Sort(IQueryable<T> query, DataTableRequest request)
         {
             var orderInstructions = GenerateSortInstructions(request);
             return Sorter.SortBy(query, orderInstructions);
         }
 
-        private IQueryable<TEntity> Paging(IQueryable<TEntity> query, DataTableRequest request)
+        private IQueryable<T> Paging(IQueryable<T> query, DataTableRequest request)
         {
             return request.Length >= 0
                 ? query.Skip(request.Start).Take(request.Length)
                 : query;
         }
 
-        private async Task<DataTableResponse> GetResultData(DataTableResponse result, IQueryable<TEntity> query, CancellationToken token)
+        private async Task<DataTableResponse> GetResultData(DataTableResponse result, IQueryable<T> query, CancellationToken token)
         {
             var data = await GetValues(query, token);
             foreach (var d in data)
@@ -88,9 +88,9 @@ namespace NooBIT.DataTables
             return result;
         }
 
-        protected virtual List<SearchInstruction<TEntity>> BuildSearchInstructions(DataTableRequest request)
+        protected virtual List<SearchInstruction<T>> BuildSearchInstructions(DataTableRequest request)
         {
-            var instructions = new List<SearchInstruction<TEntity>>();
+            var instructions = new List<SearchInstruction<T>>();
 
             var columns = Columns;
 
@@ -117,7 +117,7 @@ namespace NooBIT.DataTables
             return instructions;
         }
 
-        private IQueryable<TEntity> Where(IQueryable<TEntity> query, DataTableRequest request)
+        private IQueryable<T> Where(IQueryable<T> query, DataTableRequest request)
         {
             var instructions = BuildSearchInstructions(request);
             return query.SearchBy(instructions);
@@ -159,16 +159,16 @@ namespace NooBIT.DataTables
 
         public Column[] Columns => _columns ?? (_columns = GetColumnsInternal());
 
-        protected virtual Column[] GetColumnsInternal() => typeof(TEntity)
+        protected virtual Column[] GetColumnsInternal() => typeof(T)
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Select(GetColumnTemplate)
                 .ToArray();
 
-        protected virtual Task<List<TEntity>> GetValues(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query.ToList());
+        protected virtual Task<List<T>> GetValues(IQueryable<T> query, CancellationToken token) => Task.FromResult(query.ToList());
 
-        protected virtual Task<int> GetTotalRecordsCount(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query.Count());
+        protected virtual Task<int> GetTotalRecordsCount(IQueryable<T> query, CancellationToken token) => Task.FromResult(query.Count());
 
-        protected virtual Task<int> GetFilteredRecordsCount(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query.Count());
+        protected virtual Task<int> GetFilteredRecordsCount(IQueryable<T> query, CancellationToken token) => Task.FromResult(query.Count());
 
         private async Task OnError(DataTableRequest request, Exception exception)
         {
@@ -214,7 +214,7 @@ namespace NooBIT.DataTables
                 : search.Value;
         }
 
-        protected virtual Task<Dictionary<string, object>> MapResultSetAsync(TEntity result, CancellationToken token)
+        protected virtual Task<Dictionary<string, object>> MapResultSetAsync(T result, CancellationToken token)
         {
             var properties = result.GetType().GetProperties();
             var dict = Columns.ToDictionary(x => x.Name, x => x.Render(properties.FirstOrDefault(y => y.Name == x.Name)?.GetValue(result), result));
@@ -227,27 +227,27 @@ namespace NooBIT.DataTables
         /// <param name="query">The current query</param>
         /// <param name="token">The <cref="CancellationToken">CancellationToken</cref></param>
         /// <returns></returns>
-        protected virtual Task<IQueryable<TEntity>> GlobalWhereAsync(IQueryable<TEntity> query, CancellationToken token) => Task.FromResult(query);
+        protected virtual Task<IQueryable<T>> GlobalWhereAsync(IQueryable<T> query, CancellationToken token) => Task.FromResult(query);
 
         public sealed class Column
         {
-            public Column(IDataTable<TEntity> table)
+            public Column(IDataTable<T> table)
             {
                 Table = table;
-                SearchInstruction = new SearchInstruction<TEntity> { NameFunc = () => Name };
+                SearchInstruction = new SearchInstruction<T> { NameFunc = () => Name };
             }
 
-            public IDataTable<TEntity> Table { get; }
+            public IDataTable<T> Table { get; }
             public string Name { get; set; }
             public int Target { get; set; }
             public bool Searchable { get; set; }
             public bool Orderable { get; set; }
             public bool Hidden { get; set; }
             public Order[] Orders { get; set; } = { };
-            public Func<object, TEntity, object> Render { get; set; } = (data, entity) => data;
+            public Func<object, T, object> Render { get; set; } = (data, entity) => data;
             public Footer Footer { get; set; }
             public Header Header { get; set; } = new Header();
-            public SearchInstruction<TEntity> SearchInstruction { get; internal set; }
+            public SearchInstruction<T> SearchInstruction { get; internal set; }
 
             public sealed class Order
             {
@@ -257,13 +257,13 @@ namespace NooBIT.DataTables
 
         public sealed class Table
         {
-            public Table(IDataTable<TEntity> table)
+            public Table(IDataTable<T> table)
             {
                 DataTable = table;
                 Columns = table.Columns.OrderBy(x => x.Target).ToArray();
             }
 
-            public IDataTable<TEntity> DataTable { get; }
+            public IDataTable<T> DataTable { get; }
             public Row[] Rows { get; internal set; }
             public Column[] Columns { get; internal set; }
             public long TotalRecords { get; internal set; }
@@ -272,13 +272,13 @@ namespace NooBIT.DataTables
 
         public sealed class Row
         {
-            public Row(IDataTable<TEntity> table)
+            public Row(IDataTable<T> table)
             {
                 Table = table;
                 Columns = Table.Columns.OrderBy(x => x.Target).Select(x => new ValueColumn { Column = x }).ToArray();
             }
 
-            public IDataTable<TEntity> Table { get; }
+            public IDataTable<T> Table { get; }
             public ValueColumn[] Columns { get; }
 
             public ValueColumn this[int index]
@@ -305,9 +305,9 @@ namespace NooBIT.DataTables
         }
     }
 
-    public interface IDataTable<TEntity> : IDataTable where TEntity : class
+    public interface IDataTable<T> : IDataTable where T : class
     {
-        DataTable<TEntity>.Column[] Columns { get; }
+        DataTable<T>.Column[] Columns { get; }
     }
 
     public interface IDataTable
