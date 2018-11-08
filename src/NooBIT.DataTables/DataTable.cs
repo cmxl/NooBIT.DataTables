@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using NooBIT.DataTables.Attributes;
 using NooBIT.DataTables.Helpers;
 using NooBIT.DataTables.Models;
 using NooBIT.DataTables.Queries;
@@ -159,8 +160,9 @@ namespace NooBIT.DataTables
 
         public Column[] Columns => _columns ?? (_columns = GetColumnsInternal());
 
-        protected virtual Column[] GetColumnsInternal() => typeof(T)
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+        protected virtual Column[] GetColumnsInternal() =>
+            typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .OrderBy(x => x.GetCustomAttribute<ColumnOrderAttribute>()?.Order ?? int.MaxValue)
                 .Select(GetColumnTemplate)
                 .ToArray();
 
