@@ -12,7 +12,7 @@ using NooBIT.DataTables.Queries;
 
 namespace NooBIT.DataTables
 {
-    public abstract class DataTable<T> : IDataTable<T> where T : class
+    public class DataTable<T> : IDataTable<T> where T : class
     {
         private readonly IDataSource<T> _dataSource;
         protected readonly ISorter<T> Sorter = new Sorter<T>();
