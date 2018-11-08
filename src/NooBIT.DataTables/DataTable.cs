@@ -14,14 +14,14 @@ namespace NooBIT.DataTables
 {
     public abstract class DataTable<T> : IDataTable<T> where T : class
     {
-        private readonly IQueryableRequestService<T> _queryableRequestService;
+        private readonly IDataSource<T> _dataSource;
         protected readonly ISorter<T> Sorter = new Sorter<T>();
         private Column[] _columns;
 
         public DataTable(
-            IQueryableRequestService<T> queryableRequestService)
+            IDataSource<T> dataSource)
         {
-            _queryableRequestService = queryableRequestService;
+            _dataSource = dataSource;
         }
 
         public virtual async Task<DataTableResponse> GetAsync(DataTableRequest request, CancellationToken token = default)
@@ -33,7 +33,7 @@ namespace NooBIT.DataTables
 
             try
             {
-                var query = _queryableRequestService.Get();
+                var query = _dataSource.Get();
                 query = await PreFilter(query, token);
                 (query, result) = await TotalRecords(query, result, token);
                 query = Filter(query, request);

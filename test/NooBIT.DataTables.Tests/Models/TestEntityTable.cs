@@ -4,7 +4,7 @@ namespace NooBIT.DataTables.Tests.Models
 {
     public class TestEntityTable : DataTable<TestEntity>
     {
-        public TestEntityTable(IQueryableRequestService<TestEntity> queryableRequestService) : base(queryableRequestService)
+        public TestEntityTable(IDataSource<TestEntity> queryableRequestService) : base(queryableRequestService)
         {
         }
     }

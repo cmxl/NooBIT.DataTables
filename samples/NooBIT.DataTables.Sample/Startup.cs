@@ -16,7 +16,7 @@ namespace NooBIT.DataTables.Sample
         {
             services.AddMvc();
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-            services.AddTransient<IQueryableRequestService<SampleData>, SampleDataQueryableRequestService>();
+            services.AddTransient<IDataSource<SampleData>, SampleDataQueryableRequestService>();
             services.AddTransient<IDataTable<SampleData>, SampleDataTable>();
         }
 

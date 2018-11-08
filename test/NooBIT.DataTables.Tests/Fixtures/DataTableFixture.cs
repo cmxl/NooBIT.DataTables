@@ -7,12 +7,12 @@ namespace NooBIT.DataTables.Tests.Fixtures
     {
         public DataTableFixture()
         {
-            QueryableService = new TestEntityQueryableService();
-            Table = new TestEntityTable(QueryableService);
+            DataSource = new TestEntityDataSource();
+            Table = new TestEntityTable(DataSource);
             Request = new TestRequest();
         }
 
-        public TestEntityQueryableService QueryableService { get; }
+        public TestEntityDataSource DataSource { get; }
 
         public TestEntityTable Table { get; }
 

@@ -5,7 +5,7 @@ namespace NooBIT.DataTables.Sample.Domain
 {
     public class SampleDataTable : DataTable<SampleData>
     {
-        public SampleDataTable(IQueryableRequestService<SampleData> queryableRequestService) : base(queryableRequestService)
+        public SampleDataTable(IDataSource<SampleData> queryableRequestService) : base(queryableRequestService)
         {
         }
     }

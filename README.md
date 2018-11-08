@@ -68,14 +68,11 @@ Or if you want complete control over column generation:
     public class EmployeeTable : DataTable<Employee>
     {
         // [...]
-        
-        protected override Column[] GetColumnsInternal()
-        {
-            return typeof(TEntity)
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+        protected override Column[] GetColumnsInternal() =>
+            typeof(Employee).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .OrderBy(x => x.GetCustomAttribute<ColumnOrderAttribute>()?.Order ?? int.MaxValue)
                 .Select(GetColumnTemplate)
                 .ToArray();
-        }
     }
 ```
 

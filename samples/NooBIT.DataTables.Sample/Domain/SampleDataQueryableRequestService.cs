@@ -4,7 +4,7 @@ using NooBIT.DataTables.Sample.Model;
 
 namespace NooBIT.DataTables.Sample.Domain
 {
-    public class SampleDataQueryableRequestService : IQueryableRequestService<SampleData>
+    public class SampleDataQueryableRequestService : IDataSource<SampleData>
     {
         public IQueryable<SampleData> Get()
         {
