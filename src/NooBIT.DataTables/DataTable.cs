@@ -53,13 +53,13 @@ namespace NooBIT.DataTables
         }
 
         private async Task<IQueryable<T>> PreFilter(IQueryable<T> query, CancellationToken token) => await GlobalWhereAsync(query, token);
-        private async Task<IQueryable<T>> TotalRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token)
+        private async Task<IQueryable<T>> TotalRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token = default)
         {
             result.RecordsTotal = await GetTotalRecordsCount(query, token);
             return query;
         }
         private IQueryable<T> Filter(IQueryable<T> query, DataTableRequest request) => Where(query, request);
-        private async Task<IQueryable<T>> FilteredRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token)
+        private async Task<IQueryable<T>> FilteredRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token = default)
         {
             result.RecordsFiltered = await GetFilteredRecordsCount(query, token);
             return query;
@@ -78,7 +78,7 @@ namespace NooBIT.DataTables
                 : query;
         }
 
-        private async Task<DataTableResponse> GetResultData(DataTableResponse result, IQueryable<T> query, CancellationToken token)
+        private async Task<DataTableResponse> GetResultData(DataTableResponse result, IQueryable<T> query, CancellationToken token = default)
         {
             var data = await GetValues(query, token);
             foreach (var d in data)
@@ -166,11 +166,11 @@ namespace NooBIT.DataTables
                 .Select(GetColumnTemplate)
                 .ToArray();
 
-        protected virtual Task<List<T>> GetValues(IQueryable<T> query, CancellationToken token) => Task.FromResult(query.ToList());
+        protected virtual Task<List<T>> GetValues(IQueryable<T> query, CancellationToken token = default) => Task.FromResult(query.ToList());
 
-        protected virtual Task<int> GetTotalRecordsCount(IQueryable<T> query, CancellationToken token) => Task.FromResult(query.Count());
+        protected virtual Task<int> GetTotalRecordsCount(IQueryable<T> query, CancellationToken token = default) => Task.FromResult(query.Count());
 
-        protected virtual Task<int> GetFilteredRecordsCount(IQueryable<T> query, CancellationToken token) => Task.FromResult(query.Count());
+        protected virtual Task<int> GetFilteredRecordsCount(IQueryable<T> query, CancellationToken token = default) => Task.FromResult(query.Count());
 
         private async Task OnError(DataTableRequest request, Exception exception)
         {
@@ -216,7 +216,7 @@ namespace NooBIT.DataTables
                 : search.Value;
         }
 
-        protected virtual Task<Dictionary<string, object>> MapResultSetAsync(T result, CancellationToken token)
+        protected virtual Task<Dictionary<string, object>> MapResultSetAsync(T result, CancellationToken token = default)
         {
             var properties = result.GetType().GetProperties();
             var dict = Columns.ToDictionary(x => x.Name, x => x.Render(properties.FirstOrDefault(y => y.Name == x.Name)?.GetValue(result), result));
@@ -229,7 +229,7 @@ namespace NooBIT.DataTables
         /// <param name="query">The current query</param>
         /// <param name="token">The <cref="CancellationToken">CancellationToken</cref></param>
         /// <returns></returns>
-        protected virtual Task<IQueryable<T>> GlobalWhereAsync(IQueryable<T> query, CancellationToken token) => Task.FromResult(query);
+        protected virtual Task<IQueryable<T>> GlobalWhereAsync(IQueryable<T> query, CancellationToken token = default) => Task.FromResult(query);
 
         public sealed class Column
         {
@@ -314,7 +314,7 @@ namespace NooBIT.DataTables
 
     public interface IDataTable
     {
-        Task<DataTableResponse> GetAsync(DataTableRequest request, CancellationToken token);
+        Task<DataTableResponse> GetAsync(DataTableRequest request, CancellationToken token = default);
         event Func<object, DataTableErrorEventArgs, Task> Error;
     }
 }
