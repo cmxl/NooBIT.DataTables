@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using NooBIT.DataTables.Queries;
 
 namespace NooBIT.DataTables.Sample.Model
 {
-    public class SampleDataStore
+    public class SampleDataSource : IDataSource<SampleData>
     {
-        private static readonly string[] Names =
+        private static readonly string[] _names =
         {
             "Adam",
             "Aaron",
@@ -23,11 +23,11 @@ namespace NooBIT.DataTables.Sample.Model
             "Phoebe"
         };
 
-        public static readonly List<SampleData> SampleData;
-
-        static SampleDataStore()
+        public IQueryable<SampleData> Get()
         {
-            SampleData = Names.Select((name, index) => new SampleData {Id = index, Name = name}).ToList();
+            return _names
+                .Select((name, index) => new SampleData { Id = index, Name = name })
+                .AsQueryable();
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using NooBIT.DataTables.Models;
 
 namespace NooBIT.DataTables.Rendering
@@ -30,6 +32,12 @@ namespace NooBIT.DataTables.Rendering
                 FilteredRecords = data.RecordsFiltered
             };
             return table;
+        }
+
+        public async Task<DataTable<T>.Table> Render<T>(IDataTable<T> dataTable, DataTableRequest request, CancellationToken token = default) where T : class
+        {
+            var data = await dataTable.GetAsync(request, token);
+            return Render(dataTable, data);
         }
     }
 }

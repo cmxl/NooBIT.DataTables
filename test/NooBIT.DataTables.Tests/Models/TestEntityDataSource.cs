@@ -4,7 +4,7 @@ using NooBIT.DataTables.Queries;
 
 namespace NooBIT.DataTables.Tests.Models
 {
-    public class TestEntityQueryableService : IQueryableRequestService<TestEntity>
+    public class TestEntityDataSource : IDataSource<TestEntity>
     {
         public static readonly List<TestEntity> Entities = new List<TestEntity>
         {

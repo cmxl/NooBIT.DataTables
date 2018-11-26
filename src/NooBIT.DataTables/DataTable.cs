@@ -12,16 +12,16 @@ using NooBIT.DataTables.Queries;
 
 namespace NooBIT.DataTables
 {
-    public abstract class DataTable<T> : IDataTable<T> where T : class
+    public class DataTable<T> : IDataTable<T> where T : class
     {
-        private readonly IQueryableRequestService<T> _queryableRequestService;
+        private readonly IDataSource<T> _dataSource;
         protected readonly ISorter<T> Sorter = new Sorter<T>();
         private Column[] _columns;
 
         public DataTable(
-            IQueryableRequestService<T> queryableRequestService)
+            IDataSource<T> dataSource)
         {
-            _queryableRequestService = queryableRequestService;
+            _dataSource = dataSource;
         }
 
         public virtual async Task<DataTableResponse> GetAsync(DataTableRequest request, CancellationToken token = default)
@@ -33,11 +33,11 @@ namespace NooBIT.DataTables
 
             try
             {
-                var query = _queryableRequestService.Get();
+                var query = _dataSource.Get();
                 query = await PreFilter(query, token);
-                query = await TotalRecords(query, result, token);
+                (query, result) = await TotalRecords(query, result, token);
                 query = Filter(query, request);
-                query = await FilteredRecords(query, result, token);
+                (query, result) = await FilteredRecords(query, result, token);
                 query = Sort(query, request);
                 query = Paging(query, request);
                 result = await GetResultData(result, query, token);
@@ -53,16 +53,27 @@ namespace NooBIT.DataTables
         }
 
         private async Task<IQueryable<T>> PreFilter(IQueryable<T> query, CancellationToken token) => await GlobalWhereAsync(query, token);
+<<<<<<< HEAD
         private async Task<IQueryable<T>> TotalRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token = default)
+=======
+
+        private async Task<(IQueryable<T>, DataTableResponse)> TotalRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token)
+>>>>>>> 603684a2385699f074d7d11f4d625ed2bea66308
         {
             result.RecordsTotal = await GetTotalRecordsCount(query, token);
-            return query;
+            return (query, result);
         }
+
         private IQueryable<T> Filter(IQueryable<T> query, DataTableRequest request) => Where(query, request);
+<<<<<<< HEAD
         private async Task<IQueryable<T>> FilteredRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token = default)
+=======
+
+        private async Task<(IQueryable<T>, DataTableResponse)> FilteredRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token)
+>>>>>>> 603684a2385699f074d7d11f4d625ed2bea66308
         {
             result.RecordsFiltered = await GetFilteredRecordsCount(query, token);
-            return query;
+            return (query, result);
         }
 
         private IQueryable<T> Sort(IQueryable<T> query, DataTableRequest request)
@@ -105,11 +116,15 @@ namespace NooBIT.DataTables
             foreach (var column in request.Columns)
             {
                 if (!IsSearchable(request.Search, column, out object value))
+                {
                     continue;
+                }
 
                 var instruction = columns.Single(x => x.Name == column.Name).SearchInstruction;
                 if (instruction == null)
+                {
                     continue;
+                }
 
                 instruction.Value = value;
                 instructions.Add(instruction);
