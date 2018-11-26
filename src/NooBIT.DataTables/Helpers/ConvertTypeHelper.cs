@@ -4,21 +4,21 @@ namespace NooBIT.DataTables.Helpers
 {
     public static class ConvertTypeHelper
     {
-        public static bool TryConvert<TValue>(string obj, out TValue value)
+        public static bool TryConvert<T>(string obj, out T value)
         {
-            if (Nullable.GetUnderlyingType(typeof(TValue)) != null)
+            if (Nullable.GetUnderlyingType(typeof(T)) != null)
             {
                 return TryConvertNullable(obj, out value);
             }
 
-            if (typeof(TValue) == typeof(DateTime))
+            if (typeof(T) == typeof(DateTime))
             {
                 return TryParseDateTime(obj, out value);
             }
 
             try
             {
-                value = (TValue)Convert.ChangeType(obj, typeof(TValue));
+                value = (T)Convert.ChangeType(obj, typeof(T));
                 return true;
             }
             catch
@@ -28,7 +28,7 @@ namespace NooBIT.DataTables.Helpers
             }
         }
 
-        private static bool TryConvertNullable<TValue>(string obj, out TValue value)
+        private static bool TryConvertNullable<T>(string obj, out T value)
         {
             if (string.IsNullOrWhiteSpace(obj))
             {
@@ -36,14 +36,14 @@ namespace NooBIT.DataTables.Helpers
                 return true;
             }
 
-            if (Nullable.GetUnderlyingType(typeof(TValue)) == typeof(DateTime))
+            if (Nullable.GetUnderlyingType(typeof(T)) == typeof(DateTime))
             {
                 return TryParseDateTime(obj, out value);
             }
 
             try
             {
-                value = (TValue)Convert.ChangeType(obj, Nullable.GetUnderlyingType(typeof(TValue)) ?? throw new InvalidOperationException());
+                value = (T)Convert.ChangeType(obj, Nullable.GetUnderlyingType(typeof(T)) ?? throw new InvalidOperationException());
                 return true;
             }
             catch
@@ -53,10 +53,10 @@ namespace NooBIT.DataTables.Helpers
             }
         }
 
-        private static bool TryParseDateTime<TValue>(string obj, out TValue value)
+        private static bool TryParseDateTime<T>(string obj, out T value)
         {
             var success = DateTime.TryParse(obj, out var dateTime);
-            value = success ? (TValue)(object)dateTime : (default);
+            value = success ? (T)(object)dateTime : (default);
             return success;
         }
 

@@ -55,15 +55,9 @@ namespace NooBIT.DataTables.Internationalization
         [JsonProperty("buttons", NullValueHandling = NullValueHandling.Ignore)]
         public Buttons Buttons { get; set; }
 
-        public static LanguageSettings FromJson(string json)
-        {
-            return JsonConvert.DeserializeObject<LanguageSettings>(json);
-        }
+        public static LanguageSettings FromJson(string json) => JsonConvert.DeserializeObject<LanguageSettings>(json);
 
-        public string AsJson(Formatting formatting = Formatting.None)
-        {
-            return JsonConvert.SerializeObject(this, formatting);
-        }
+        public string AsJson(Formatting formatting = Formatting.None) => JsonConvert.SerializeObject(this, formatting);
 
         public override string ToString() => AsJson(Formatting.Indented);
     }

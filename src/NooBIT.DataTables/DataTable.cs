@@ -48,29 +48,20 @@ namespace NooBIT.DataTables
                 result.Error = "\nEin unerwarteter Fehler ist aufgetreten.\nPrüfen Sie Ihre Eingaben und versuchen Sie es erneut.";
                 await OnError(request, exception);
             }
-
             return result;
         }
 
-        private async Task<IQueryable<T>> PreFilter(IQueryable<T> query, CancellationToken token) => await GlobalWhereAsync(query, token);
-<<<<<<< HEAD
-        private async Task<IQueryable<T>> TotalRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token = default)
-=======
+        private async Task<IQueryable<T>> PreFilter(IQueryable<T> query, CancellationToken token = default) => await GlobalWhereAsync(query, token);
 
-        private async Task<(IQueryable<T>, DataTableResponse)> TotalRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token)
->>>>>>> 603684a2385699f074d7d11f4d625ed2bea66308
+        private async Task<(IQueryable<T>, DataTableResponse)> TotalRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token = default)
         {
             result.RecordsTotal = await GetTotalRecordsCount(query, token);
             return (query, result);
         }
 
         private IQueryable<T> Filter(IQueryable<T> query, DataTableRequest request) => Where(query, request);
-<<<<<<< HEAD
-        private async Task<IQueryable<T>> FilteredRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token = default)
-=======
 
-        private async Task<(IQueryable<T>, DataTableResponse)> FilteredRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token)
->>>>>>> 603684a2385699f074d7d11f4d625ed2bea66308
+        private async Task<(IQueryable<T>, DataTableResponse)> FilteredRecords(IQueryable<T> query, DataTableResponse result, CancellationToken token = default)
         {
             result.RecordsFiltered = await GetFilteredRecordsCount(query, token);
             return (query, result);
