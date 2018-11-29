@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>NooBIT.DataTables provides functionality to process ajax requests from https://datatables.net javascript framework v1.10.x</Description>
     <Copyright>© 2018</Copyright>
-    <PackageLicenseUrl>https://github.com/cmxl/NooBIT.DataTables/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/cmxl/NooBIT.DataTables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/cmxl/NooBIT.DataTables</RepositoryUrl>
     <PackageTags>datatables, netstandard, dotnet</PackageTags>
@@ -18,8 +18,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LinqKit.Core" Version="1.1.15" />
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../LICENSE.md" Pack="true" Visible="false" PackagePath="$(PackageLicenseFile)" />
   </ItemGroup>
 
 </Project>

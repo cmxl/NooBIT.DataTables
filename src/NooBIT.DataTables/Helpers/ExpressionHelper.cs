@@ -8,9 +8,10 @@ namespace NooBIT.DataTables.Helpers
     {
         private static readonly MethodInfo _compareMethod = typeof(string).GetMethod("IndexOf", new[] { typeof(string), typeof(StringComparison) });
 
-        public static Expression<Func<T, bool>> BuildExpression<T>(PropertyInfo property, object value) => property.PropertyType == typeof(string)
-            ? Contains<T>(property, value as string)
-            : Equal<T>(property, value);
+        public static Expression<Func<T, bool>> BuildExpression<T>(PropertyInfo property, object value)
+            => property.PropertyType == typeof(string)
+                ? Contains<T>(property, value as string)
+                : Equal<T>(property, value);
 
         public static Expression<Func<T, bool>> Contains<T>(PropertyInfo propertyInfo, string value)
         {

@@ -9,7 +9,10 @@ namespace NooBIT.DataTables.Helpers
     {
         public static IQueryable<T> SearchBy<T>(IQueryable<T> source, List<SearchInstruction<T>> instructions)
         {
-            Expression<Func<T, bool>> where = x => (instructions == null || instructions.Count == 0);
+            if (instructions == null || instructions.Count == 0)
+                return source;
+
+            Expression<Func<T, bool>> where = x => false;
 
             instructions.ForEach(x =>
             {
