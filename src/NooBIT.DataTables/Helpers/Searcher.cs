@@ -13,7 +13,7 @@ namespace NooBIT.DataTables.Helpers
             if (instructions == null || instructions.Count == 0)
                 return source;
 
-            Expression<Func<T, bool>> where = PredicateBuilder.New<T>();
+            Expression<Func<T, bool>> where = PredicateBuilder.New<T>(true);
             instructions.ForEach(x =>
             {
                 if (x.Expression != null)
