@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using LinqKit;
 
 namespace NooBIT.DataTables.Helpers
 {
@@ -12,13 +13,12 @@ namespace NooBIT.DataTables.Helpers
             if (instructions == null || instructions.Count == 0)
                 return source;
 
-            Expression<Func<T, bool>> where = x => false;
-
+            Expression<Func<T, bool>> where = PredicateBuilder.New<T>();
             instructions.ForEach(x =>
             {
                 if (x.Expression != null)
                 {
-                    where = where.Or(x.Expression);
+                    where = where.And(x.Expression);
                     return;
                 }
 
@@ -33,7 +33,7 @@ namespace NooBIT.DataTables.Helpers
                     return;
 
                 var expression = ExpressionHelper.BuildExpression<T>(property, value);
-                where = where.Or(expression);
+                where = where.And(expression);
 
             });
 
