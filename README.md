@@ -8,7 +8,7 @@ NooBIT.DataTables provides functionality to process ajax requests from https://d
 
 | Service | Status |
 | --- | --- |
-| AppVeyor | [![Build status](https://ci.appveyor.com/api/projects/status/vdu0r2ijk9xbsyev/branch/master?svg=true)](https://ci.appveyor.com/project/cmxl/noobit-datatables/branch/master) |
+| AppVeyor | [![Build status](https://ci.appveyor.com/api/projects/status/vdu0r2ijk9xbsyev/branch/master?svg=true)](https://ci.appveyor.com/project/cmxl/noobit-datatables-6h5la/branch/master) |
 
 ## Packages
 
