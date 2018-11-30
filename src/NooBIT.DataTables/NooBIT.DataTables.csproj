@@ -5,10 +5,10 @@
     <Description>NooBIT.DataTables provides functionality to process ajax requests from https://datatables.net javascript framework v1.10.x</Description>
     <Copyright>© 2018</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/cmxl/NooBIT.DataTables</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/cmxl/NooBIT.DataTables</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/xNooBIT/NooBIT.DataTables</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/xNooBIT/NooBIT.DataTables</RepositoryUrl>
     <PackageTags>datatables, netstandard, dotnet</PackageTags>
-    <Company />
+    <Company>NooBIT</Company>
     <Authors>Tobias Haimerl (cmxl)</Authors>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <Version>1.0.0</Version>
