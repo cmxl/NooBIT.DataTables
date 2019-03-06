@@ -39,7 +39,7 @@ You can override the default:
     public class EmployeeTable : DataTable<Employee>
     {
         // [...]
-        
+
         protected override Column GetColumnTemplate(PropertyInfo x, int index)
         {
             return new Column(this)
