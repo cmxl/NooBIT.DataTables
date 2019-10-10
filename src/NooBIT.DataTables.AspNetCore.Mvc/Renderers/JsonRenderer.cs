@@ -7,7 +7,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
     {
         public static IHtmlContent Render(object obj)
         {
-            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             return new HtmlString(json);
         }
     }

@@ -9,31 +9,17 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
     {
         public IHtmlContent Render(Editor editor)
         {
-            switch (editor.EditorType)
+            return editor.EditorType switch
             {
-                case EditorType.Text:
-                    return RenderTextBox(editor as TextBox);
-
-                case EditorType.Date:
-                    return RenderDatePicker(editor as DatePicker);
-
-                case EditorType.Select:
-                    return RenderSelect(editor as Select);
-
-                case EditorType.LinkedSelect:
-                    return RenderLinkedSelect(editor as LinkedSelect);
-
-                case EditorType.CheckBox:
-                    return RenderCheckBox(editor as CheckBox);
-
-                case EditorType.Button:
-                    return RenderButton(editor as Button);
-
-                case EditorType.Number:
-                    return RenderNumberTextBox(editor as NumberTextBox);
-            }
-
-            throw new NotImplementedException();
+                EditorType.Text => RenderTextBox(editor as TextBox),
+                EditorType.Date => RenderDatePicker(editor as DatePicker),
+                EditorType.Select => RenderSelect(editor as Select),
+                EditorType.LinkedSelect => RenderLinkedSelect(editor as LinkedSelect),
+                EditorType.CheckBox => RenderCheckBox(editor as CheckBox),
+                EditorType.Button => RenderButton(editor as Button),
+                EditorType.Number => RenderNumberTextBox(editor as NumberTextBox),
+                _ => throw new NotImplementedException(),
+            };
         }
 
         private IHtmlContent RenderLinkedSelect(LinkedSelect linkedSelect)

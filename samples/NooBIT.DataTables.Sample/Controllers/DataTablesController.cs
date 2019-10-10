@@ -56,7 +56,7 @@ namespace NooBIT.DataTables.Sample.Controllers
         [HttpGet("/language/{language}")]
         public IActionResult Lang(string language)
         {
-            return Json(Language.All.Value[language], new JsonSerializerSettings { Formatting = Formatting.Indented });
+            return Json(Language.All.Value[language], new JsonSerializerSettings { Formatting = Formatting.Indented}); 
         }
     }
 }

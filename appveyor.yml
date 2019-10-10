@@ -1,4 +1,4 @@
-version: 3.0.0
+version: 4.0.0
 
 environment:
   nuget_token:
@@ -12,7 +12,7 @@ skip_branch_with_pr: true
 skip_tags: true
 
 max_jobs: 1
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 
 dotnet_csproj:
@@ -31,7 +31,7 @@ build_script:
   - cmd: dotnet restore
   - cmd: dotnet build NooBIT.DataTables.sln -c Release /p:DebugType=Full
   - cmd: dotnet test test\NooBIT.DataTables.Tests\NooBIT.DataTables.Tests.csproj -c Release --no-build
-  - cmd: dotnet pack -c Release --no-build --include-symbols -o ..\..\artifacts /p:PackageVersion=%APPVEYOR_BUILD_VERSION%
+  - cmd: dotnet pack -c Release --no-build --include-symbols -o artifacts /p:PackageVersion=%APPVEYOR_BUILD_VERSION%
   - cmd: dotnet nuget push artifacts\NooBIT.DataTables.%APPVEYOR_BUILD_VERSION%.nupkg -k %nuget_token% -s https://www.nuget.org/api/v2/package
   - cmd: dotnet nuget push artifacts\NooBIT.DataTables.AspNetCore.Mvc.%APPVEYOR_BUILD_VERSION%.nupkg -k %nuget_token% -s https://www.nuget.org/api/v2/package
 
