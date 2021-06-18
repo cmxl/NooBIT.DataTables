@@ -34,9 +34,9 @@ namespace NooBIT.DataTables.Rendering
             return table;
         }
 
-        public async Task<DataTable<T>.Table> Render<T>(IDataTable<T> dataTable, DataTableRequest request, CancellationToken token = default) where T : class
+        public async Task<DataTable<T>.Table> Render<T>(IDataTable<T> dataTable, DataTableRequest request, CancellationToken token) where T : class
         {
-            var data = await dataTable.GetAsync(request, token);
+            var data = await dataTable.GetAsync(request, token).ConfigureAwait(false);
             return Render(dataTable, data);
         }
     }

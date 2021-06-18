@@ -48,9 +48,9 @@ namespace NooBIT.DataTables.Helpers
             Register(name, selector);
         }
 
-        private string GetMemberName<TKey>(Expression<Func<T, TKey>> selector)
+        private static string GetMemberName<TKey>(Expression<Func<T, TKey>> selector)
         {
-            if (!(selector.Body is MemberExpression memberExpression))
+            if (selector.Body is not MemberExpression memberExpression)
                 throw new ArgumentException($"Expression '{selector}' is not a {typeof(MemberExpression)}", nameof(selector));
 
             return memberExpression.Member.Name;

@@ -6,7 +6,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
 {
     internal class MvcHtmlDataTableColumnJsonRenderer
     {
-        public IHtmlContent Render<T>(IEnumerable<DataTable<T>.Column> columns) where T : class
+        public static IHtmlContent Render<T>(IEnumerable<DataTable<T>.Column> columns) where T : class
         {
             var columnDefs = new List<dynamic>(columns.Select(x => new
             {

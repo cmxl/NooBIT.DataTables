@@ -6,9 +6,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
 {
     internal class MvcHtmlDataTableRenderer
     {
-        private readonly MvcHtmlEditorRenderer _editorRenderer = new MvcHtmlEditorRenderer();
-
-        public IHtmlContent Render<T>(IDataTable<T> dataTable) where T : class
+        public static IHtmlContent Render<T>(IDataTable<T> dataTable) where T : class
         {
             var table = new TagBuilder("table");
             table.AddCssClass("compact");
@@ -23,7 +21,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return table;
         }
 
-        private IHtmlContent CreateTableFooter<T>(IDataTable<T> dataTable) where T : class
+        private static IHtmlContent CreateTableFooter<T>(IDataTable<T> dataTable) where T : class
         {
             if (dataTable.Columns.All(x => x.Footer == null))
                 return null;
@@ -46,7 +44,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return tfoot;
         }
 
-        private IHtmlContent CreateTableHeader<T>(IDataTable<T> dataTable) where T : class
+        private static IHtmlContent CreateTableHeader<T>(IDataTable<T> dataTable) where T : class
         {
             var thead = new TagBuilder("thead");
             var tr = new TagBuilder("tr");
@@ -67,14 +65,14 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return thead;
         }
 
-        private IHtmlContent CreateTableHeaderDisplay(Header columnHeader)
+        private static IHtmlContent CreateTableHeaderDisplay(Header columnHeader)
         {
             var span = new TagBuilder("span");
             span.InnerHtml.Append(columnHeader.DisplayName);
             return span;
         }
 
-        private IHtmlContent RenderFooterEditor(Footer footer)
+        private static IHtmlContent RenderFooterEditor(Footer footer)
         {
             if (footer.Editor == null)
             {
@@ -84,11 +82,11 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
                 return span;
             }
 
-            return _editorRenderer.Render(footer.Editor);
+            return MvcHtmlEditorRenderer.Render(footer.Editor);
         }
 
-        private IHtmlContent CreateFilter<T>(DataTable<T>.Column column) where T : class => column.Header.Filter == null
+        private static IHtmlContent CreateFilter<T>(DataTable<T>.Column column) where T : class => column.Header.Filter == null
                 ? null
-                : _editorRenderer.Render(column.Header.Filter);
+                : MvcHtmlEditorRenderer.Render(column.Header.Filter);
     }
 }

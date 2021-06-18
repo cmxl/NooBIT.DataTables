@@ -48,8 +48,8 @@ namespace NooBIT.DataTables.Helpers
         private Type _type;
         private string _name;
         internal Func<string> NameFunc { get; set; }
-        public string Name => _name ?? (_name = NameFunc?.Invoke());
-        public Type Type => _type ?? (_type = typeof(T).GetProperty(Name).PropertyType);
+        public string Name => _name ??= NameFunc?.Invoke();
+        public Type Type => _type ??= typeof(T).GetProperty(Name).PropertyType;
         public object Value { get; internal set; }
         internal Expression<Func<T, bool>> Expression { get; private set; }
 

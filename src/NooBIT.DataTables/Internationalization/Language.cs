@@ -9,7 +9,7 @@ namespace NooBIT.DataTables.Internationalization
 {
     public static class Language
     {
-        public static readonly Lazy<IReadOnlyDictionary<string, NamedLanguageSettings>> All = new Lazy<IReadOnlyDictionary<string, NamedLanguageSettings>>(() =>
+        public static readonly Lazy<IReadOnlyDictionary<string, NamedLanguageSettings>> All = new(() =>
         {
             var languages = typeof(Language)
                 .GetFields()

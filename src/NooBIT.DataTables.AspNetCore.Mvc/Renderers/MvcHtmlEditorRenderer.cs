@@ -7,7 +7,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
 {
     internal class MvcHtmlEditorRenderer
     {
-        public IHtmlContent Render(Editor editor)
+        public static IHtmlContent Render(Editor editor)
         {
             return editor.EditorType switch
             {
@@ -22,7 +22,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             };
         }
 
-        private IHtmlContent RenderLinkedSelect(LinkedSelect linkedSelect)
+        private static IHtmlContent RenderLinkedSelect(LinkedSelect linkedSelect)
         {
             var select = new TagBuilder("select");
 
@@ -41,7 +41,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return select;
         }
 
-        private IHtmlContent RenderNumberTextBox(NumberTextBox numberTextBox)
+        private static IHtmlContent RenderNumberTextBox(NumberTextBox numberTextBox)
         {
             var input = new TagBuilder("input");
 
@@ -59,7 +59,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return input.RenderSelfClosingTag();
         }
 
-        private IHtmlContent RenderButton(Button button)
+        private static IHtmlContent RenderButton(Button button)
         {
             var btn = new TagBuilder("button");
 
@@ -86,7 +86,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return btn;
         }
 
-        private IHtmlContent RenderCheckBox(CheckBox checkBox)
+        private static IHtmlContent RenderCheckBox(CheckBox checkBox)
         {
             var cb = new TagBuilder("input");
             SetDefaultAttributes(cb, checkBox);
@@ -94,7 +94,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return cb.RenderSelfClosingTag();
         }
 
-        private IHtmlContent RenderSelect(Select sel)
+        private static IHtmlContent RenderSelect(Select sel)
         {
             var select = new TagBuilder("select");
             SetDefaultAttributes(select, sel);
@@ -112,7 +112,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
         }
 
 
-        private IHtmlContent RenderDatePicker(DatePicker datePicker)
+        private static IHtmlContent RenderDatePicker(DatePicker datePicker)
         {
             var input = new TagBuilder("input");
 
@@ -131,7 +131,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return input.RenderSelfClosingTag();
         }
 
-        private IHtmlContent RenderTextBox(TextBox textBox)
+        private static IHtmlContent RenderTextBox(TextBox textBox)
         {
             var input = new TagBuilder("input");
 
@@ -148,7 +148,7 @@ namespace NooBIT.DataTables.AspNetCore.Mvc.Renderers
             return input.RenderSelfClosingTag();
         }
 
-        private void SetDefaultAttributes(TagBuilder tagBuilder, Editor editor)
+        private static void SetDefaultAttributes(TagBuilder tagBuilder, Editor editor)
         {
             if (!string.IsNullOrWhiteSpace(editor.Id))
                 tagBuilder.Attributes.Add("id", editor.Id);
