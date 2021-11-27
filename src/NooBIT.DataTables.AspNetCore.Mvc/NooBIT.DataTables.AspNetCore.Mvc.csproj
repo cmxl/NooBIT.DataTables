@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Description>NooBIT.DataTables provides functionality to process ajax requests from https://datatables.net javascript framework v1.10.x</Description>
-    <Copyright>© 2018</Copyright>
+    <Copyright>© 2021</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/xNooBIT/NooBIT.DataTables</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xNooBIT/NooBIT.DataTables</RepositoryUrl>
     <PackageTags>datatables, dotnet, aspnet, mvc, netcore</PackageTags>
     <Company>NooBIT</Company>
     <Authors>Tobias Haimerl (cmxl)</Authors>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <Version>1.0.0</Version>
+    <AssemblyVersion>6.0.0</AssemblyVersion>
+    <Version>6.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes />
     <LangVersion>latest</LangVersion>
